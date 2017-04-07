@@ -2,7 +2,7 @@
 function Client_PresentConfigureUI(rootParent)
 	local initialValue = Mod.Settings.RandomizeAmount;
 	local initialNegatives = Mod.Settings.AllowNegative;
-	if initialValue == nil then initialValue = 5; end
+	if initialValue == nil then initialValue = 2; end
 	if initialNegatives == nil then initialNegatives = false; end
     
 	local vert = UI.CreateVerticalLayoutGroup(rootParent);
