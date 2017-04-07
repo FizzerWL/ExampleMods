@@ -1,5 +1,6 @@
 
 function Server_Created(game, settings)
+	errror('test');
     local overriddenBonuses = {};
 
     for _, bonus in pairs(game.Map.Bonuses) do

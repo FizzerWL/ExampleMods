@@ -14,6 +14,8 @@ function Client_PresentConfigureUI(rootParent)
 		.SetSliderMaxValue(15)
 		.SetValue(initialValue);
 
+	UI.CreateLabel(vert).SetText("Normally, negative bonuses will not be modified and bonuses will not go negative.  However, you can check the \"Allow Negative Bonuses\" box to make this happen.");
+
 	allowNegativeBonusesCheckBox = UI.CreateCheckBox(vert).SetText('Allow Negative Bonuses').SetIsChecked(initialNegatives);
 
 end
