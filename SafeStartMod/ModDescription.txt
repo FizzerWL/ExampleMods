@@ -1,0 +1,1 @@
+Prevents players from attacking other players or AIs at the start of the game.  Game creators can configure how many turns the protection lasts.  This only stops attack orders, cards are still allowed.
