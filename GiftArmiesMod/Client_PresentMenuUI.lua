@@ -73,7 +73,7 @@ end
 function SubmitClicked()
 	local msg = 'Gifting ' .. NumArmiesInput.GetValue() .. ' armies from ' .. Game.Map.Territories[TargetTerritoryID].Name .. ' to ' .. Game.Game.Players[TargetPlayerID].DisplayName(nil, false);
 
-	local payload = NumArmiesInput.GetValue() .. ',' .. TargetTerritoryID .. ',' .. TargetPlayerID;
+	local payload = 'GiftArmies_' .. NumArmiesInput.GetValue() .. ',' .. TargetTerritoryID .. ',' .. TargetPlayerID;
 
 	local orders = Game.Orders;
 	table.insert(orders, WL.GameOrderCustom.Create(Game.Us.ID, msg, payload));

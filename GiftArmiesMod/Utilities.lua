@@ -74,3 +74,7 @@ function randomFromArray(array)
 	local i = math.random(len);
 	return array[i];
 end
+
+function startsWith(str, sub)
+	return string.sub(str, 1, string.len(sub)) == sub;
+end
