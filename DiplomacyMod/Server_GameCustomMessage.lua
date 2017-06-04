@@ -24,7 +24,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 			playerData[payload.TargetPlayerID].PendingProposals = pendingProposals;
 			Mod.PlayerGameData = playerData;
 		end
-	elseif (payload.Message == "AcceptProposal" or payload.Message == "RejectProposal") then
+	elseif (payload.Message == "AcceptProposal" or payload.Message == "DeclineProposal") then
 		local proposal = first(Mod.PlayerGameData[playerID].PendingProposals, function(prop) return prop.ID == payload.ProposalID end);
 
 		if (proposal == nil) then error("Proposal with ID " .. payload.ProposalID .. ' not found') end;
