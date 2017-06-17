@@ -34,7 +34,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 		pgd[playerID].PendingProposals = filter(pgd[playerID].PendingProposals, function(prop) return prop.ID ~= payload.ProposalID end);
 		Mod.PlayerGameData = pgd;
 
-		--If we're accepting it, call ProposalAccepted. If we're rejecting it, just do nothing and let it be removed.
+		--If we're accepting it, call ProposalAccepted. If we're declining it, just do nothing and let it be removed.
 		if (payload.Message == "AcceptProposal") then
 			ProposalAccepted(proposal, game);
 		end
