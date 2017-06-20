@@ -1,2 +1,0 @@
-# WarlightModPicksSwap
-Mod for Warlight
