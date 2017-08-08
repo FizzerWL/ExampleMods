@@ -59,6 +59,7 @@ function SubmitClicked()
 		return;
 	end
 
+	--Check for negative gold.  We don't need to check to ensure we have this much since the server does that check in Server_GameCustomMessage
 	local gold = GoldInput.GetValue();
 	if (gold <= 0) then
 		UI.Alert("Gold to gift must be a positive number");
