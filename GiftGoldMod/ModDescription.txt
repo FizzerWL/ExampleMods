@@ -1,5 +1,5 @@
 Allows players to gift gold to another player in commerce games, friend or foe.  This mod should only be used in commerce games, as it has no effect otherwise.
 
-To use it, select Gift Armies from the game's menu, how much gold to give, and which player you wish to give it to. The gold will be given immediately, and can be spent by the receving player right away.
+To use it, select Gift Gold from the game's menu, how much gold to give, and which player you wish to give it to. The gold will be given immediately, and can be spent by the receving player right away.
 
 One use of this mod is for team games where you wish to share gold amoungst your teammates.
