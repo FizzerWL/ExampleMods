@@ -70,6 +70,6 @@ function SubmitClicked()
 	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost } );
 
 	local orders = Game.Orders;
-	table.insert(orders, orders);
+	table.insert(orders, order);
 	Game.Orders = orders;
 end
