@@ -50,12 +50,17 @@ function TerritoryButton(terr)
 end
 
 function SubmitClicked()
-
 	if (TargetTerritoryID == nil) then
 		UI.Alert("Please choose a territory first");
 		return;
 	end
-
+	
+	if(Game.Us.HasCommittedOrders == true)then
+		UI.Alert("You need to uncommit first");
+		--since you can't write in the order table when the player has already commited, he needs to uncommit first before he can purchase the territory
+		return;
+	end
+	
 	local goldHave = Gold(Game.Us);
 	if (goldHave < Cost) then
 		UI.Alert("You can't afford it.  You have " .. goldHave .. " gold and it costs " .. Cost);
