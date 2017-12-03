@@ -23,7 +23,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 	UI.CreateLabel(row1).SetText("Gift gold to this player: ");
 	TargetPlayerBtn = UI.CreateButton(row1).SetText("Select player...").SetOnClick(TargetPlayerClicked);
 
-	local goldHave = Gold(game.Us);
+	local goldHave = game.LatestStanding.NumResources(game.Us.ID, WL.ResourceType.Gold);
 
 	local row2 = UI.CreateHorizontalLayoutGroup(vert);
 	UI.CreateLabel(row2).SetText('Amount of gold to give away: ');

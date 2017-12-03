@@ -5,8 +5,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 
 	local goldSending = payload.Gold;
 
-	local us = game.Game.Players[playerID];
-	local goldHave = Gold(us);
+	local goldHave = game.ServerGame.LatestTurnStanding.NumResources(playerID, WL.ResourceType.Gold);
 
 	if (goldHave < goldSending) then
 		setReturnTable({ Message = "You can't gift " .. goldSending .. " when you only have " .. goldHave });
@@ -14,7 +13,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 	end
 
 	local targetPlayer = game.Game.Players[payload.TargetPlayerID];
-	local targetPlayerHasGold = Gold(targetPlayer);
+	local targetPlayerHasGold = game.ServerGame.LatestTurnStanding.NumResources(targetPlayer.ID, WL.ResourceType.Gold);
 	
 	--Subtract goldSending from ourselves, add goldSending to target
 	game.ServerGame.SetPlayerResource(playerID, WL.ResourceType.Gold, goldHave - goldSending);

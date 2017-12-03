@@ -56,7 +56,7 @@ function SubmitClicked()
 		return;
 	end
 
-	local goldHave = Gold(Game.Us);
+	local goldHave = Game.LatestStanding.NumResources(Game.Us.ID, WL.ResourceType.Gold);
 	if (goldHave < Cost) then
 		UI.Alert("You can't afford it.  You have " .. goldHave .. " gold and it costs " .. Cost);
 		return;

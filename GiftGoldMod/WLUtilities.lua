@@ -18,12 +18,3 @@ function DumpProxy(obj)
 
     print('type=' .. obj.proxyType .. ' readOnly=' .. tostring(obj.readonly) .. ' readableKeys=' .. table.concat(obj.readableKeys, ',') .. ' writableKeys=' .. table.concat(obj.writableKeys, ','));
 end
-
-
-function Gold(player)
-	if (player.Resources == nil) then
-		return 0;
-	else
-		return player.Resources[WL.ResourceType.Gold];
-	end
-end
