@@ -39,7 +39,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 			ProposalAccepted(proposal, game);
 		end
 	else
-		error("Payload message not understood: " .. payload.Message);
+		error("Payload message not understood (" .. payload.Message + ")");
 	end
 
 end
