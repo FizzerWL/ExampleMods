@@ -69,9 +69,13 @@ function ProposalAccepted(proposal, game)
 	alliance.PlayerTwo = proposal.PlayerTwo;
 	alliance.ExpiresOnTurn = game.Game.NumberOfTurns + proposal.NumTurns;
 
-	--Write it into Mod.PublicGameData for all to see
 	local data = Mod.PublicGameData;
 	local alliances = data.Alliances or {};
+
+	--Do we already have an alliance? Remove it if so.
+	alliances = filter(alliances, function(a) return not ((a.PlayerOne == alliance.PlayerOne and a.PlayerTwo == alliance.PlayerTwo) or (a.PlayerOne == alliance.PlayerTwo and a.PlayerTwo == alliance.PlayerOne)) end);
+
+	--Write it into Mod.PublicGameData for all to see
 	table.insert(alliances, alliance);
 	data.Alliances = alliances;
 	Mod.PublicGameData = data;
