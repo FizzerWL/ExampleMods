@@ -1,4 +1,5 @@
 require('Utilities');
+require('Client');
 
 --remembers what proposal IDs and alliance IDs we've alerted the player about so we don't alert them twice.
 HighestAllianceIDSeen = 0;
@@ -12,9 +13,7 @@ function Client_GameRefresh(game)
 
     --Check for proposals we haven't alerted the player about yet
     for _,proposal in pairs(filter(Mod.PlayerGameData.PendingProposals or {}, function(proposal) return HighestProposalIDSeen < proposal.ID end)) do
-        local otherPlayer = game.Game.Players[proposal.PlayerOne].DisplayName(nil, false);
-        UI.PromptFromList(otherPlayer .. ' has proposed an alliance with you for ' .. proposal.NumTurns .. ' turns.  Do you accept?', { AcceptProposalBtn(game, proposal), DeclineProposalBtn(game, proposal) });
-
+        DoProposalPrompt(game, proposal);
         if (HighestProposalIDSeen < proposal.ID) then
             HighestProposalIDSeen = proposal.ID;
         end
@@ -46,29 +45,4 @@ function Client_GameRefresh(game)
         
     end
 
-end
-
-function AcceptProposalBtn(game, proposal)
-	local ret = {};
-	ret["text"] = 'Accept';
-	ret["selected"] = function() 
-        local payload = {};
-        payload.Message = "AcceptProposal";
-        payload.ProposalID = proposal.ID;
-		game.SendGameCustomMessage('Accepting proposal...', payload, function(returnValue) end);
-	end
-	return ret;
-end
-
-
-function DeclineProposalBtn(game, proposal)
-	local ret = {};
-	ret["text"] = 'Decline';
-	ret["selected"] = function() 
-        local payload = {};
-        payload.Message = "DeclineProposal";
-        payload.ProposalID = proposal.ID;
-		game.SendGameCustomMessage('Declining proposal...', payload, function(returnValue) end);
-	end
-	return ret;
 end

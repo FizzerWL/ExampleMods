@@ -1,12 +1,21 @@
 require('Utilities');
+require('Client');
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close)
 	Game = game; --make it globally accessible
 
-	local alliances = Mod.PublicGameData.Alliances or {};
 
 	local vert = UI.CreateVerticalLayoutGroup(rootParent);
 
+	--List pending proposals.  This isn't absolutely necessary since we also alert the player of new proposals, but it's nice to list them here anyway.
+	for _,proposal in pairs(Mod.PlayerGameData.PendingProposals or {}) do
+		local otherPlayer = game.Game.Players[proposal.PlayerOne].DisplayName(nil, false);
+		local row = UI.CreateHorizontalLayoutGroup(vert);
+		UI.CreateLabel(row).SetText('Proposal from ' .. otherPlayer);
+		UI.CreateButton(row).SetText('Respond').SetOnClick(function() DoProposalPrompt(game, proposal); close(); end);
+    end
+
+	local alliances = Mod.PublicGameData.Alliances or {};
 	if (#alliances == 0) then
 		UI.CreateLabel(vert).SetText("No alliances are currently in effect");
 	else
