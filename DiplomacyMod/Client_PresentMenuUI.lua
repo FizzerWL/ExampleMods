@@ -96,6 +96,8 @@ end
 function IsPotentialTarget(player)
 	if (Game.Us.ID == player.ID) then return false end; -- we can never propose an alliance with ourselves.
 
+	if (player.State ~= WL.GamePlayerState.Playing) then return false end; --skip players not alive anymore, or that declined the game.
+
 	if (Game.Settings.SinglePlayer) then return true end; --in single player, allow proposing with everyone
 
 	return not player.IsAI; --In multi-player, never allow proposing with an AI.
