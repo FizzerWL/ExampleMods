@@ -4,7 +4,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
     if (payload.Message == "Propose") then
 		--Create a proposal
 		local proposal = {};
-		proposal.ID = math.random(2000000000);
+		proposal.ID = NewIdentity();
 		proposal.PlayerOne = playerID;
 		proposal.PlayerTwo = payload.TargetPlayerID;
 		proposal.NumTurns = payload.NumTurns;
@@ -38,17 +38,33 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 		if (payload.Message == "AcceptProposal") then
 			ProposalAccepted(proposal, game);
 		end
+	elseif (payload.Message == 'SeenAllianceMessage') then
+		
+		local playerData = Mod.PlayerGameData;
+		if (playerData[playerID] == nil) then
+			playerData[playerID] = {};
+		end
+		playerData[playerID].HighestAllianceIDSeen = payload.HighestAllianceIDSeen;
+		Mod.PlayerGameData = playerData;
 	else
-		error("Payload message not understood (" .. payload.Message + ")");
+		error("Payload message not understood (" .. payload.Message .. ")");
 	end
 
 end
 
+function NewIdentity()
+	local data = Mod.PublicGameData;
+	local ret = data.Identity or 1;
+	data.Identity = ret + 1;
+	Mod.PublicGameData = data;
+	return ret;
+end
 
 function ProposalAccepted(proposal, game)
+	
 	--Create the alliance
 	local alliance = {};
-	alliance.ID = math.random(2000000000);
+	alliance.ID = NewIdentity();
 	alliance.PlayerOne = proposal.PlayerOne;
 	alliance.PlayerTwo = proposal.PlayerTwo;
 	alliance.ExpiresOnTurn = game.Game.NumberOfTurns + proposal.NumTurns;
