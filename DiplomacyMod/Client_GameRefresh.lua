@@ -6,6 +6,10 @@ HighestAllianceIDSeen = 0;
 HighestProposalIDSeen = 0; 
 
 function Client_GameRefresh(game)
+    --Skip if we're not in the game.  We can't use game.SendGameCustomMessage as a spectator
+    if (game.Us == nil) then 
+        return;
+    end
 
     if (HighestAllianceIDSeen == 0 and Mod.PlayerGameData.HighestAllianceIDSeen ~= nil and Mod.PlayerGameData.HighestAllianceIDSeen > HighestAllianceIDSeen) then
         HighestAllianceIDSeen = Mod.PlayerGameData.HighestAllianceIDSeen;
