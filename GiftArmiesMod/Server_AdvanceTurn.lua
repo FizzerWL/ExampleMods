@@ -14,6 +14,9 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		if (numArmies < 0) then numArmies = 0 end;
 		if (numArmies > armiesOnTerritory) then numArmies = armiesOnTerritory end;
 
+		local targetTerritories = map(filter(game.ServerGame.LatestTurnStanding.Territories, function(t) return t.OwnerPlayerID == targetPlayerID end), function(t) return t.ID; end); --find territories owned by target
+		if (#targetTerritories == 0) then return end; --skip if they have no territories
+
 		local terrMods = {};
 		--helper function
 		local modArmies = function(terrID, numArmies)
@@ -30,7 +33,6 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		modArmies(targetTerritoryID, -numArmies);
 
 		--Now randomly distribute those armies on the target player's territories, one at a time.
-		local targetTerritories = map(filter(game.ServerGame.LatestTurnStanding.Territories, function(t) return t.OwnerPlayerID == targetPlayerID end), function(t) return t.ID; end);
 		for i=1,numArmies do
 			modArmies(randomFromArray(targetTerritories), 1);
 		end

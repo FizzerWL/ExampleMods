@@ -3,7 +3,7 @@ require('Utilities');
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	Game = game;
 
-	setMaxSize(450, 250);
+	setMaxSize(450, 280);
 
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
 
