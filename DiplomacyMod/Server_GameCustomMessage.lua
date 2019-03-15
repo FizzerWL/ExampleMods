@@ -27,7 +27,7 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 	elseif (payload.Message == "AcceptProposal" or payload.Message == "DeclineProposal") then
 		local proposal = first(Mod.PlayerGameData[playerID].PendingProposals, function(prop) return prop.ID == payload.ProposalID end);
 
-		if (proposal == nil) then error("Proposal with ID " .. payload.ProposalID .. ' not found') end;
+		if (proposal == nil) then return; end; --skip if the proposal ID is invalid.  This can happen if it gets accepted/declined twice
 
 		--Remove it from PlayerGameData
 		local pgd = Mod.PlayerGameData;
