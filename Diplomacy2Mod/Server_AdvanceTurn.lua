@@ -21,6 +21,9 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 			allianceBreak.OurPlayerID = order.PlayerID;
 			allianceBreak.OtherPlayerID = tonumber(payloadSplit[3]);
 			AlliancesBreakingThisTurn[#AlliancesBreakingThisTurn + 1] = allianceBreak;
+
+			--Don't show the break order here. Instead, we'll insert it ourselves at the bottom in Server_AdvanceTurn_End
+			skipThisOrder(WL.ModOrderControl.SkipAndSupressSkippedMessage);
 		else
 			error("Custom order message not understood (" .. msg .. ")");
 		end
@@ -41,7 +44,14 @@ function Server_AdvanceTurn_End(game, addNewOrder)
 	--break any alliances that we saw break orders for	
 	local gameData = Mod.PublicGameData;
 	for _, allianceBreak in pairs(AlliancesBreakingThisTurn) do
+
 		gameData.Alliances = filter(gameData.Alliances or {}, function(alliance) return not AllianceMatchesPlayers(alliance, allianceBreak.OurPlayerID, allianceBreak.OtherPlayerID) end);
+
+		--Add an order so everyone is aware of the breakage
+		local ourPlayerName = game.Game.Players[allianceBreak.OurPlayerID].DisplayName(nil, false);
+		local otherPlayerName = game.Game.Players[allianceBreak.OtherPlayerID].DisplayName(nil, false);
+		local msg = ourPlayerName .. ' broke alliance with ' .. otherPlayerName;
+		addNewOrder(WL.GameOrderEvent.Create(allianceBreak.OurPlayerID, msg));
 	end
 	Mod.PublicGameData = gameData;
 end
