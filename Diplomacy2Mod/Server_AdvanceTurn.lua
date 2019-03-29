@@ -18,12 +18,3 @@ function PlayersAreAllied(game, playerOne, playerTwo)
 		end
 	) ~= nil;
 end
-
-function Server_AdvanceTurn_End(game, addNewOrder)
-	--Remove alliances that have expired
-	local gameData = Mod.PublicGameData;
-
-	gameData.Alliances = filter(gameData.Alliances or {}, function(alliance) return alliance.ExpiresOnTurn > game.Game.NumberOfTurns + 1 end);
-
-	Mod.PublicGameData = gameData;
-end

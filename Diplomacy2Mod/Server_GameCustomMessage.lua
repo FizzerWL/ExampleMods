@@ -7,7 +7,6 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 		proposal.ID = NewIdentity();
 		proposal.PlayerOne = playerID;
 		proposal.PlayerTwo = payload.TargetPlayerID;
-		proposal.NumTurns = payload.NumTurns;
 
 		if (game.Settings.SinglePlayer) then
 			--In single-player, just auto-accept proposals for testing.
@@ -67,7 +66,6 @@ function ProposalAccepted(proposal, game)
 	alliance.ID = NewIdentity();
 	alliance.PlayerOne = proposal.PlayerOne;
 	alliance.PlayerTwo = proposal.PlayerTwo;
-	alliance.ExpiresOnTurn = game.Game.NumberOfTurns + proposal.NumTurns;
 
 	local data = Mod.PublicGameData;
 	local alliances = data.Alliances or {};

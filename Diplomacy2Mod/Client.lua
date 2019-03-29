@@ -2,7 +2,7 @@ require('Utilities');
 
 function DoProposalPrompt(game, proposal) 
     local otherPlayer = game.Game.Players[proposal.PlayerOne].DisplayName(nil, false);
-    UI.PromptFromList(otherPlayer .. ' has proposed an alliance with you for ' .. proposal.NumTurns .. ' turns.  Do you accept?', { AcceptProposalBtn(game, proposal), DeclineProposalBtn(game, proposal) });
+    UI.PromptFromList(otherPlayer .. ' has proposed an alliance with you.  Do you accept?', { AcceptProposalBtn(game, proposal), DeclineProposalBtn(game, proposal) });
 
 end
 function AcceptProposalBtn(game, proposal)

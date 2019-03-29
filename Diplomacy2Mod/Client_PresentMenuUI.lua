@@ -1,5 +1,6 @@
 require('Utilities');
 require('Client');
+require('Diplomacy');
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close)
 	Game = game; --make it globally accessible
@@ -29,7 +30,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 				otherPlayerID = alliance.PlayerOne
 			end
 			local otherPlayerName = game.Game.Players[otherPlayerID].DisplayName(nil, false);
-			UI.CreateLabel(vert).SetText('You are allied with ' .. otherPlayerName .. ' until turn ' .. (alliance.ExpiresOnTurn+1));
+			UI.CreateLabel(vert).SetText('You are allied with ' .. otherPlayerName);
 		end
 
 			
@@ -49,6 +50,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 
 end
 
+
 function CreateProposeDialog(rootParent, setMaxSize, setScrollable, game, close)
 	setMaxSize(390, 300);
 	TargetPlayerID = nil;
@@ -60,13 +62,6 @@ function CreateProposeDialog(rootParent, setMaxSize, setScrollable, game, close)
 	UI.CreateLabel(row1).SetText("Propose an alliance with this player: ");
 	TargetPlayerBtn = UI.CreateButton(row1).SetText("Select player...").SetOnClick(TargetPlayerClicked);
 
-	local row2 = UI.CreateHorizontalLayoutGroup(vert);
-	UI.CreateLabel(row2).SetText("Alliance will last this many turns: ");
-	local numTurnsSlider = UI.CreateNumberInputField(row2)
-		.SetSliderMinValue(1)
-		.SetSliderMaxValue(10)
-		.SetValue(5);
-
 	UI.CreateButton(vert).SetText("Propose Alliance").SetOnClick(function() 
 
 		if (TargetPlayerID == nil) then
@@ -74,16 +69,10 @@ function CreateProposeDialog(rootParent, setMaxSize, setScrollable, game, close)
 			return;
 		end
 
-		local numTurns = numTurnsSlider.GetValue();
-		if (numTurns <= 0) then
-			UI.Alert("Numer of turns must be a positive number");
-			return;
-		end
-
 		local payload = {};
 		payload.Message = "Propose";
 		payload.TargetPlayerID = TargetPlayerID;
-		payload.NumTurns = numTurns;
+
 
 		Game.SendGameCustomMessage("Proposing alliance...", payload, function(returnValue) 
 			UI.Alert("Proposal sent!");

@@ -35,7 +35,7 @@ function Client_GameRefresh(game)
         local msgs = map(unseenAlliances, function(alliance)
             local playerOne = game.Game.Players[alliance.PlayerOne].DisplayName(nil, false);
 			local playerTwo = game.Game.Players[alliance.PlayerTwo].DisplayName(nil, false);
-			return playerOne .. ' and ' .. playerTwo .. ' are now allied until turn ' .. (alliance.ExpiresOnTurn+1) .. '!';
+			return playerOne .. ' and ' .. playerTwo .. ' are now allied!';
         end);
         local finalMsg = table.concat(msgs, '\n');
 
