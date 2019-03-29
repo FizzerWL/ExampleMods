@@ -1,0 +1,3 @@
+Allows players to make alliances with each other.  All alliances made are public -- to view them, open the diplomacy mod from the game's menu.
+
+To propose an alliance, click Propose and select the player and number of turns to make the alliance for.  If they accept, both players will be unable to attack the other until it expires.
