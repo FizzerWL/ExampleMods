@@ -49,4 +49,17 @@ function Client_GameRefresh(game)
         
     end
 
+    --Notify players of any pending alerts
+    local unseenAlerts = Mod.PlayerGameData.Alerts or {};
+
+    if (#unseenAlerts > 0) then
+        local msg = table.concat(map(unseenAlerts, function(alert) return alert.Message end), '\n');
+
+        --Let the server know we've seen all of these. Wait on doing the alert until after the message is received just to avoid two things appearing on the screen at once.
+        local payload = {};
+        payload.Message = 'SeenAlerts';
+        game.SendGameCustomMessage('Read receipt...', payload, function(returnValue)
+            UI.Alert(msg);
+        end);
+    end
 end

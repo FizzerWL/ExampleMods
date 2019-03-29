@@ -1,3 +1,11 @@
+
+function NewIdentity()
+	local data = Mod.PublicGameData;
+	local ret = data.Identity or 1;
+	data.Identity = ret + 1;
+	Mod.PublicGameData = data;
+	return ret;
+end
 function Dump(obj)
 	if obj.proxyType ~= nil then
 		DumpProxy(obj);

@@ -45,18 +45,17 @@ function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 		end
 		playerData[playerID].HighestAllianceIDSeen = payload.HighestAllianceIDSeen;
 		Mod.PlayerGameData = playerData;
+	elseif (payload.Message == 'SeenAlerts') then
+		local playerData = Mod.PlayerGameData;
+		if (playerData[playerID] == nil) then
+			playerData[playerID] = {};
+		end
+		playerData[playerID].Alerts = nil;
+		Mod.PlayerGameData = playerData;
 	else
 		error("Payload message not understood (" .. payload.Message .. ")");
 	end
 
-end
-
-function NewIdentity()
-	local data = Mod.PublicGameData;
-	local ret = data.Identity or 1;
-	data.Identity = ret + 1;
-	Mod.PublicGameData = data;
-	return ret;
 end
 
 function ProposalAccepted(proposal, game)
