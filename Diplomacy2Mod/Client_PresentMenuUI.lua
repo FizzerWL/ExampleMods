@@ -30,7 +30,14 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 				otherPlayerID = alliance.PlayerOne
 			end
 			local otherPlayerName = game.Game.Players[otherPlayerID].DisplayName(nil, false);
-			UI.CreateLabel(vert).SetText('You are allied with ' .. otherPlayerName);
+
+			
+			local horz = UI.CreateHorizontalLayoutGroup(vert);
+			UI.CreateLabel(horz).SetText('You are allied with ' .. otherPlayerName);
+			UI.CreateButton(horz).SetText("Break").SetOnClick(function() 
+				BreakAlliance(otherPlayerID, otherPlayerName);
+				close();
+			end);
 		end
 
 			
@@ -50,6 +57,15 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 
 end
 
+function BreakAlliance(otherPlayerID, otherPlayerName)
+	local msg = 'Breaking alliance with ' .. otherPlayerName;
+
+	local payload = 'Diplomacy2_BreakAlliance_' .. otherPlayerID;
+
+	local orders = Game.Orders;
+	table.insert(orders, WL.GameOrderCustom.Create(Game.Us.ID, msg, payload));
+	Game.Orders = orders;
+end
 
 function CreateProposeDialog(rootParent, setMaxSize, setScrollable, game, close)
 	setMaxSize(390, 300);
