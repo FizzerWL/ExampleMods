@@ -45,7 +45,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 		for _,alliance in pairs(filter(alliances, function(alliance) return game.Us == nil or (alliance.PlayerOne ~= game.Us.ID and alliance.PlayerTwo ~= game.Us.ID) end)) do
 			local playerOne = game.Game.Players[alliance.PlayerOne].DisplayName(nil, false);
 			local playerTwo = game.Game.Players[alliance.PlayerTwo].DisplayName(nil, false);
-			UI.CreateLabel(vert).SetText(playerOne .. ' and ' .. playerTwo .. ' are allied until turn ' .. (alliance.ExpiresOnTurn+1));
+			UI.CreateLabel(vert).SetText(playerOne .. ' and ' .. playerTwo .. ' are allied');
 		end
 	end
 
