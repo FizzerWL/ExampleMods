@@ -13,6 +13,10 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 			return; --can only buy neutral territories, so ignore this purchase request.  This can happen if someone captured the territory before the purchase order happened. Their gold was still spent, which isn't ideal.  We could try to refund it here to make the mod nicer.  In practice this won't happen often since people will put their purchase order at the start of the turn, before attacks.
 		end
 
+		if (order.CostOpt == nil) then
+			return; --shouldn't ever happen, unless another mod interferes
+		end
+
 		local costFromOrder = order.CostOpt[WL.ResourceType.Gold]; --this is the cost from the order.  We can't trust this is accurate, as someone could hack their client and put whatever cost they want in there.  Therefore, we must calculate it ourselves, and only do the purchase if they match
 
 		local realCost = Mod.Settings.CostPerNeutralArmy * targetTerritoryStanding.NumArmies.NumArmies;
