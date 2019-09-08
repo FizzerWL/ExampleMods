@@ -2,6 +2,7 @@ require('Utilities');
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	Game = game;
+	SubmitBtn = nil;
 
 	setMaxSize(450, 280);
 
