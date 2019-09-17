@@ -1,0 +1,5 @@
+Instead of all players playing at the same time as usual, this mod turns Warzone into a game where players take turns.
+
+For example, in a 1v1, one player would get to deploy/attack on evened numbered turns, and the other would get to deploy/attack on odd numbered turns.  Which players get which turn is determined randomly.
+
+When it's not your turn, you'll still have to open the game and press Commit.  If you try to enter orders on a turn where you're not supposed to, the mod will skip them so they're ignored.  On all but the first turn, a sanctions card will make your income 0 so you don't need to deploy needlessly.
