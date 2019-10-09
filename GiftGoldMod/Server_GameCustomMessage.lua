@@ -3,6 +3,10 @@ require('WLUtilities');
 
 function Server_GameCustomMessage(game, playerID, payload, setReturnTable)
 
+	if (playerID == payload.TargetPlayerID) then
+		setReturnTable({ Message = "You can't gift yourself" });
+		return;
+	end
 	local goldSending = payload.Gold;
 
 	local goldHave = game.ServerGame.LatestTurnStanding.NumResources(playerID, WL.ResourceType.Gold);
