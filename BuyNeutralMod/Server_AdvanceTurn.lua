@@ -28,10 +28,6 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		--All checks passed!  Let's change ownership
 		local mod = WL.TerritoryModification.Create(targetTerritoryID);
 		mod.SetOwnerOpt = order.PlayerID;
-		addNewOrder(WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, {mod}));
-		
-
-		skipThisOrder(WL.ModOrderControl.SkipAndSupressSkippedMessage); --we replaced the GameOrderCustom with a GameOrderEvent, so get rid of the custom order.  There wouldn't be any harm in leaving it there, but it adds clutter to the orders list so it's better to get rid of it.
-
+		addNewOrder(WL.GameOrderEvent.Create(order.PlayerID, "Purchased " .. game.Map.Territories[targetTerritoryID].Name, {}, {mod}));
 	end
 end

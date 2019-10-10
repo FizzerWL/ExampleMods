@@ -68,7 +68,7 @@ function SubmitClicked()
 		return;
 	end
 
-	local msg = 'Purchase ' ..  Game.Map.Territories[TargetTerritoryID].Name .. ' for ' .. Cost .. ' gold';
+	local msg = 'Request to purchase ' ..  Game.Map.Territories[TargetTerritoryID].Name .. ' for ' .. Cost .. ' gold';
 
 	local payload = 'BuyNeutral_' .. TargetTerritoryID;
 
