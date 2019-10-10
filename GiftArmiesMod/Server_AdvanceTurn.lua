@@ -14,6 +14,11 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		if (numArmies < 0) then numArmies = 0 end;
 		if (numArmies > armiesOnTerritory) then numArmies = armiesOnTerritory end;
 
+		if (targetPlayerID == order.PlayerID) then  --can't gift yourself
+			skipThisOrder(WL.ModOrderControl.Skip);
+			return;
+		end 
+
 		local targetTerritories = map(filter(game.ServerGame.LatestTurnStanding.Territories, function(t) return t.OwnerPlayerID == targetPlayerID end), function(t) return t.ID; end); --find territories owned by target
 		if (#targetTerritories == 0) then return end; --skip if they have no territories
 
