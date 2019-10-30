@@ -25,14 +25,11 @@ function CheckShowInstructions(game)
     end
 
     local order = Mod.PublicGameData.PlayerOrder;
-
     local ourIndex = OurIndex(game.Us.ID);
 
-    local finalMsg = "This game uses the turn-based mod.  Each player will only get a turn once every " .. #order .. " turns.  When it's not your turn, you should just commit without entering any orders.  If you do enter orders, they'll be ignored.  On all but the first turn, a sanctions card will be used to remove your income so you don't have to deploy.  Your randomly-determined position is " .. (ourIndex+1);
-
     ShownInstructions = true;
-    UI.Alert(finalMsg);
 
+    UI.Alert("This game uses the Take Turns mod.  Each player will get a turn once every " .. #order .. " turns.  When it's not your turn, you should just commit without entering any orders.  If you do enter orders, they'll be ignored.  On all but the first turn, a sanctions card will be used to remove your income so you don't have to deploy.  Your randomly-determined position is " .. (ourIndex+1));
 end
 
 function OurIndex(us)
