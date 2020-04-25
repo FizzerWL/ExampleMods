@@ -9,6 +9,12 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		local targetTerritoryID = tonumber(payloadSplit[2]);
 		local targetPlayerID = tonumber(payloadSplit[3]);
 
+		--Skip if we don't control the territory (this can happen if someone captures the territory before our gift order executes)
+		if (order.PlayerID ~= game.ServerGame.LatestTurnStanding.Territories[targetTerritoryID].OwnerPlayerID) then
+			skipThisOrder(WL.ModOrderControl.Skip);
+			return;
+		end
+
 		local armiesOnTerritory = game.ServerGame.LatestTurnStanding.Territories[targetTerritoryID].NumArmies.NumArmies;
 
 		if (numArmies < 0) then numArmies = 0 end;
