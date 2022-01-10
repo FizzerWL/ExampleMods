@@ -1,0 +1,3 @@
+Allows players to gift armies to another player, friend or foe.  Armies you give will be added to that player's income in the following turn.
+
+To use it, select Gift Armies from the game's menu, select a territory you wish to give armies from, how many armies to give, and which player you wish to give them to.

@@ -1,0 +1,1 @@
+Allows for some territories to be auto-distributed and some to be manual-distributed (picked). 

@@ -1,0 +1,1 @@
+Distributes cities to random neutral territories at the start of the game.  Note that Commerce mode must be enabled for the cities to have any effect.

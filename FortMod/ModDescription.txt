@@ -1,0 +1,3 @@
+This mod allows players to build a fort.  Any armies on a territory with a fort cannot be harmed by an incoming attack, but any incoming attack will destroy the fort.  Therefore, as an attacker, it's a good idea to attack a fort with 1 army to destory it with minimal losses.
+
+Forts are represented on the map as an Army Camp icon.  This mod assumes any Army Camp icons on the map are a fort, and therefore it is not compatible with any other mods that use the Army Camp icon.
