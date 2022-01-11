@@ -45,6 +45,8 @@ function PlayerButton(player)
 	ret["selected"] = function() 
 		TargetPlayerBtn.SetText(name);
 		TargetPlayerID = player.ID;
+
+		CheckCreateFinalStep();
 	end
 	return ret;
 end
@@ -65,13 +67,16 @@ function TerritoryClicked(terrDetails)
 		--Territory was clicked, remember it
 		TargetTerritoryInstructionLabel.SetText("Selected territory: " .. terrDetails.Name);
 		SelectedTerritory = terrDetails;
-		CheckCreateFinalStep();		
+		CheckCreateFinalStep();
 	end
 
 	return ret;
 end
 
 function CheckCreateFinalStep()
+
+	if (SelectedTerritory == nil or TargetPlayerID == nil) then return; end;
+
 	if (SubmitBtn == nil) then
 
 		local row3 = UI.CreateHorizontalLayoutGroup(vert);
@@ -86,6 +91,8 @@ function CheckCreateFinalStep()
 end
 
 function SubmitClicked()
+	if (SelectedTerritory == nil or TargetPlayerID == nil) then return; end;
+
 	local msg = 'Gifting ' .. NumArmiesInput.GetValue() .. ' armies from ' .. SelectedTerritory.Name .. ' to ' .. Game.Game.Players[TargetPlayerID].DisplayName(nil, false);
 
 	local payload = 'GiftArmies2_' .. NumArmiesInput.GetValue() .. ',' .. SelectedTerritory.ID .. ',' .. TargetPlayerID;

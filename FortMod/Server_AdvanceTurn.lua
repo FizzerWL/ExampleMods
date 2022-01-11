@@ -1,7 +1,5 @@
 require('Utilities');
 
-PendingFortsToBuild = {};
-
 function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrder)
 	--Check if we see a Build Fort event.  If we do, add it to a global list that we'll check in BuildForts() below.
 	if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuildFort_')) then  --look for the order that we inserted in Client_PresentMenuUI
@@ -21,21 +19,17 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		playerData[order.PlayerID].NumForts = playerData[order.PlayerID].NumForts - 1;
 		Mod.PlayerGameData = playerData;
 
-		--Build the fort
-		local structures = game.ServerGame.LatestTurnStanding.Territories[terrID].Structures;
+		--Build the fort. We could add it with addNewOrder right here, but that would result in forts being built mid-turn, but we want them built at the end of the turn.  So instead add them to a list here, and we'll call addNewOrder for each in Server_AdvanceTurn_End
+		local pendingFort = {};
+		pendingFort.PlayerID = order.PlayerID;
+		pendingFort.Message = order.Message;
+		pendingFort.TerritoryID = terrID;
 
-		if (structures == nil) then structures = {}; end;
-		if (structures[WL.StructureType.ArmyCamp] == nil) then
-			structures[WL.StructureType.ArmyCamp] = 1;
-		else
-			structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] + 1;
-		end
 
-		local terrMod = WL.TerritoryModification.Create(terrID);
-		terrMod.SetStructuresOpt = structures;
-
-		--We could add it with addNewOrder right here, but that would result in forts being built mid-turn, but we want them built at the end of the turn.  So instead add them to a list here, and we'll call addNewOrder for each in Server_AdvanceTurn_End
-		table.insert(PendingFortsToBuild, WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, {terrMod}));
+		local priv = Mod.PrivateGameData;
+		if (priv.PendingForts == nil) then priv.PendingForts = {}; end;
+		table.insert(priv.PendingForts, pendingFort);
+		Mod.PrivateGameData = priv;
 
 		skipThisOrder(WL.ModOrderControl.SkipAndSupressSkippedMessage); --skip this order just to avoid clutter in the orders list, since our GameOrderEvent will serve as the message.
 	end
@@ -60,15 +54,35 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 	end
 end
 function Server_AdvanceTurn_End(game, addNewOrder)
-	BuildForts(addNewOrder);
+	BuildForts(game, addNewOrder);
 	CheckAwardForts(game);
 end
 
-function BuildForts(addNewOrder)
+function BuildForts(game, addNewOrder)
 	--Build any forts that we queued in up Server_AdvanceTurn_Order
-	for _,v in pairs(PendingFortsToBuild) do
-		addNewOrder(v);
+	
+	local priv = Mod.PrivateGameData;
+	if (priv.PendingForts == nil) then return; end;
+
+
+	for _,pendingFort in pairs(priv.PendingForts) do
+		local structures = game.ServerGame.LatestTurnStanding.Territories[pendingFort.TerritoryID].Structures;
+
+		if (structures == nil) then structures = {}; end;
+		if (structures[WL.StructureType.ArmyCamp] == nil) then
+			structures[WL.StructureType.ArmyCamp] = 1;
+		else
+			structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] + 1;
+		end
+	
+		local terrMod = WL.TerritoryModification.Create(pendingFort.TerritoryID);
+		terrMod.SetStructuresOpt = structures;
+	
+		addNewOrder(WL.GameOrderEvent.Create(pendingFort.PlayerID, pendingFort.Message, {}, {terrMod}));
 	end
+
+	priv.PendingForts = nil;
+	Mod.PrivateGameData = priv;
 end
 
 function CheckAwardForts(game)
