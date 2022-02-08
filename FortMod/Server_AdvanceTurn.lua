@@ -6,9 +6,6 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		--Extract territory ID from the payload
 		local terrID = tonumber(string.sub(order.Payload, 11));
 
-		--Make sure the player controls this territory, and do nothing if they don't.
-		if (game.ServerGame.LatestTurnStanding.Territories[terrID].OwnerPlayerID ~= order.PlayerID) then return; end;
-
 		--Make sure this player has a fort to build, and do nothing if they don't have any.
 		local playerData = Mod.PlayerGameData;
 		if (playerData[order.PlayerID] == nil) then return; end;
@@ -43,14 +40,21 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		if (structures[WL.StructureType.ArmyCamp] == nil) then return; end;
 		if (structures[WL.StructureType.ArmyCamp] <= 0) then return; end;
 
-		--Attack found against a fort!  Cancel any defenders that died, and remove the fort.
-		result.DefendingArmiesKilled = WL.Armies.Create(0);
-
+		--Attack found against a fort!  Cancel the attack and remove the fort.
 		structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] - 1;
 
 		local terrMod = WL.TerritoryModification.Create(order.To);
 		terrMod.SetStructuresOpt = structures;
 		addNewOrder(WL.GameOrderEvent.Create(order.PlayerID, 'Destroyed a fort', {}, {terrMod}));
+
+
+		if (result.DefendingArmiesKilled.IsEmpty) then
+			--A successful attack on a territory where no defending armies were killed must mean it was a territory defended by 0 armies.  In this case, we can't stop the attack by simply setting DefendingArmiesKilled to 0, since attacks against 0 are always successful.  So instead, we simply skip the entire attack.
+			skipThisOrder(WL.ModOrderControl.Skip);
+		else
+			result.DefendingArmiesKilled = WL.Armies.Create(0);
+		end
+
 	end
 end
 function Server_AdvanceTurn_End(game, addNewOrder)
@@ -62,21 +66,31 @@ function BuildForts(game, addNewOrder)
 	--Build any forts that we queued in up Server_AdvanceTurn_Order
 	
 	local priv = Mod.PrivateGameData;
-	if (priv.PendingForts == nil) then return; end;
+	local pending = priv.PendingForts;
+	if (pending == nil) then return; end;
 
+	-- Remove any pending builds where the player lost control of the territory, so we don't build a fort for the new owner
+	removeWhere(pending, function(t) return t.PlayerID ~= game.ServerGame.LatestTurnStanding.Territories[t.TerritoryID].OwnerPlayerID; end);
 
-	for _,pendingFort in pairs(priv.PendingForts) do
-		local structures = game.ServerGame.LatestTurnStanding.Territories[pendingFort.TerritoryID].Structures;
+ 
+	-- We will now build a fort for each pending fort.  However, we need to take care to ensure that if there are two build orders for the same territory that we build both of them, so we first group by the territory ID so we get all build orders for the same territory together.
+	for territoryID,pendingFortGroup in pairs(groupBy(pending, function(t) return t.TerritoryID; end)) do
+
+		local numFortsToBuildHere = #pendingFortGroup;
+
+		local structures = game.ServerGame.LatestTurnStanding.Territories[territoryID].Structures;
 
 		if (structures == nil) then structures = {}; end;
 		if (structures[WL.StructureType.ArmyCamp] == nil) then
-			structures[WL.StructureType.ArmyCamp] = 1;
+			structures[WL.StructureType.ArmyCamp] = numFortsToBuildHere;
 		else
-			structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] + 1;
+			structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] + numFortsToBuildHere;
 		end
 	
-		local terrMod = WL.TerritoryModification.Create(pendingFort.TerritoryID);
+		local terrMod = WL.TerritoryModification.Create(territoryID);
 		terrMod.SetStructuresOpt = structures;
+
+		local pendingFort = first(pendingFortGroup);
 	
 		addNewOrder(WL.GameOrderEvent.Create(pendingFort.PlayerID, pendingFort.Message, {}, {terrMod}));
 	end

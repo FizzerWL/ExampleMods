@@ -68,9 +68,17 @@ function filter(array, func)
 	return new_array
 end
 
+function removeWhere(array, func)
+	for k,v in pairs(array) do
+		if (func(v)) then
+			array[k] = nil;
+		end
+	end
+end
+
 function first(array, func)
 	for _,v in pairs(array) do
-		if (func(v)) then
+		if (func == nil or func(v)) then
 			return v;
 		end
 	end
@@ -92,4 +100,19 @@ function shuffle(tbl)
 		local j = math.random(i)
 		tbl[i], tbl[j] = tbl[j], tbl[i]
 	end
+end
+
+function groupBy(tbl, funcToGetKey)
+	local ret = {};
+	for k,v in pairs(tbl) do
+		local key = funcToGetKey(v);
+		local group = ret[key];
+		if (group == nil) then
+			group = {};
+			ret[key] = group;
+		end
+		table.insert(group, v);
+	end
+
+	return ret;
 end
