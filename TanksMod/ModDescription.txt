@@ -1,0 +1,3 @@
+This mod allows players to purchase a tank.  Tanks are worth 10 armies in combat by default, and they cannot be partially damaged.  They are only destroyed if they take 10 damage in a single combat.
+
+This mod requires using commerce mode.  To purchase a tank, visit the commerce build menu and pay its cost.  By default, you can only have two tanks at one time.
