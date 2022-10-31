@@ -6,14 +6,14 @@ function Client_PresentCommercePurchaseUI(rootParent, game, close)
 	
 	local vert = UI.CreateVerticalLayoutGroup(rootParent);
 
-	UI.CreateLabel(vert).SetText("Tanks are worth " .. Mod.Settings.TankPower .. " armies and cost " .. Mod.Settings.CostToBuyTank .. " gold to purchase.  You may only have " .. Mod.Settings.MaxTanks .. " tanks at a time.");
+	UI.CreateLabel(vert).SetText("Tanks are worth " .. Mod.Settings.TankPower .. " armies and cost " .. Mod.Settings.CostToBuyTank .. " gold to purchase.  You may have up to " .. Mod.Settings.MaxTanks .. " tanks at a time.");
 	UI.CreateButton(vert).SetText("Purchase a tank for " .. Mod.Settings.CostToBuyTank .. " gold").SetOnClick(PurchaseClicked);
 end
 
 function NumTanksIn(armies)
 	local ret = 0;
 	for _,su in pairs(armies.SpecialUnits) do
-		if (su.Name == 'Tank') then
+		if (su.proxyType == 'CustomSpecialUnit' and su.Name == 'Tank') then
 			ret = ret + 1;
 		end
 	end
