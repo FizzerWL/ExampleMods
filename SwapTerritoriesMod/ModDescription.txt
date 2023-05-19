@@ -1,3 +1,3 @@
 This will swap territories between players at the end of the turn.  The number of territories to swap and the chance of a swap can be configured by the game creator.
 
-This mod will never swap a territory that has a commander on it.
+This mod will never swap a territory that has special units (like commanders).
