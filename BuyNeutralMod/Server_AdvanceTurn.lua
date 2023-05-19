@@ -10,7 +10,9 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		local targetTerritoryStanding = game.ServerGame.LatestTurnStanding.Territories[targetTerritoryID];
 
 		if (targetTerritoryStanding.OwnerPlayerID ~= WL.PlayerID.Neutral) then
-			return; --can only buy neutral territories, so ignore this purchase request.  This can happen if someone captured the territory before the purchase order happened. Their gold was still spent, which isn't ideal.  We could try to refund it here to make the mod nicer.  In practice this won't happen often since people will put their purchase order at the start of the turn, before attacks.
+			--can only buy neutral territories, so ignore this purchase request.  This can happen if someone captured the territory before the purchase order happened or if two players try to purchase the same territory.  Skip the order so they don't get charged.
+			skipThisOrder(WL.ModOrderControl.Skip);
+			return;
 		end
 
 		if (order.CostOpt == nil) then
