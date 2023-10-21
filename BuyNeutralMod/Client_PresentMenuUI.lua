@@ -32,7 +32,7 @@ function showMain()
 	
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
 	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
-	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).(function()
+	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetOnClick(function()
 			showMain();
 		end);
 end
