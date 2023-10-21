@@ -43,14 +43,14 @@ function TargetTerritoryClicked(terrDetails)
 	end
 	
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
-	
+
 	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
 		wrongInputLabel.SetText("The territory must be fully visible for you to be able to buy it");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
 	
-	if terr.OwnerPlayerID == WL.PlayerID.Neutral then
+	if terr.OwnerPlayerID ~= WL.PlayerID.Neutral then
 		wrongInputLabel.SetText("You cannot buy a non-neutral territory");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
