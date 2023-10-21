@@ -18,17 +18,17 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		return;
 	end
 
-	local row1 = UI.CreateHorizontalLayoutGroup(vert);
-	territoryLabel = UI.CreateLabel(row1).SetText("Click the neutral territory that you want to buy");
+	territoryLabel = UI.CreateLabel(vert).SetText("Click the neutral territory that you want to buy");
 	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	
 	wrongInputLabel = UI.CreateLabel(vert).SetColor("#CC0000");
-
-
+	
+	
 	CostLabel = UI.CreateLabel(vert).SetText(" ");
 	
+	local row1 = UI.CreateHorizontalLayoutGroup(vert);
 	submitButton = UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
-
+	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetOnClick(TargetTerritoryClicked);
 end
 
 
@@ -72,6 +72,7 @@ function TargetTerritoryClicked(terrDetails)
 	TargetTerritoryID = terrDetails.ID;
 
 	submitButton.SetInteractable(true);
+	requestNewTerritoryButton.SetInteractable(true);
 end
 
 function SubmitClicked()
@@ -89,7 +90,7 @@ function SubmitClicked()
 	end
 	
 	if (goldHave < Cost) then
-		UI.Alert("You can't afford it.  You have " .. goldHave .. " gold and it costs " .. Cost);
+		UI.Alert("You can't afford it. You have " .. goldHave .. " gold and it costs " .. Cost);
 		return;
 	end
 
