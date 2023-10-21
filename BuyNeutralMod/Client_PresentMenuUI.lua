@@ -66,6 +66,9 @@ function TargetTerritoryClicked(terrDetails)
 
 	territoryLabel.SetText("Chosen territory: " .. Game.Map.Territories[terrDetails.ID].Name);
 
+	Cost = Mod.Settings.CostPerNeutralArmy * terr.NumArmies.NumArmies;
+	CostLabel.SetText("This territory costs " .. Cost .. " gold");
+
 	TargetTerritoryID = terrDetails.ID;
 
 	submitButton.SetInteractable(true);
