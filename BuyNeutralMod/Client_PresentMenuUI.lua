@@ -19,13 +19,15 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	end
 
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
-	territoryLabel = UI.CreateLabel(row1).SetText("Purchase territory: ");
+	territoryLabel = UI.CreateLabel(row1).SetText("Click the neutral territory that you want to buy");
 	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+	
+	wrongInputLabel = UI.CreateLabel(vert).SetColor("#AA0000");
 
 
 	CostLabel = UI.CreateLabel(vert).SetText(" ");
 	
-	UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
+	submitButton = UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
 
 end
 
@@ -41,22 +43,29 @@ function TargetTerritoryClicked(terrDetails)
 	end
 
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
-	for i, v in pairs(WL.StandingFogLevel) do
-		print(i, v);
+	
+	if terr.FogLevel == WL.StandingFogLevel.Visible then
+		wrongInputLabel.SetText("The territory must be fully visible for you to be able to buy it");
+		return;
 	end
-end
 
-function TerritoryButton(terr)
-	local name = Game.Map.Territories[terr.ID].Name;
-	local ret = {};
-	ret["text"] = name;
-	ret["selected"] = function()
-		TargetTerritoryBtn.SetText(name);
-		TargetTerritoryID = terr.ID;
-		Cost = terr.NumArmies.NumArmies * Mod.Settings.CostPerNeutralArmy;
-		CostLabel.SetText("Cost = " .. Cost .. " gold");
+	if terr.OwnerPlayerID == WL.PlayerID.Neutral then
+		wrongInputLabel.SetText("You cannot buy a non-neutral territory");
+		return;
 	end
-	return ret;
+
+	if #terr.NumArmies.SpecialUnits == 0 then
+		wrongInputLabel.SetText("You cannot buy territories that have special units");
+		return;
+	end
+
+	wrongInputLabel.SetText(" ");
+
+	territoryLabel.SetText("Chosen territory: " .. Game.Map.Territories[terrDetails.ID].Name);
+
+	TargetTerritoryID = terrDetails.ID;
+
+	submitButton.SetInteractable(true);
 end
 
 function SubmitClicked()
