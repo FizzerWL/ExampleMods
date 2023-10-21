@@ -43,7 +43,7 @@ function TargetTerritoryClicked(terrDetails)
 	end
 	
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
-	
+	print(terr.FogLevel, WL.StandingFogLevel.Visible);
 	if terr.FogLevel == WL.StandingFogLevel.Visible then
 		wrongInputLabel.SetText("The territory must be fully visible for you to be able to buy it");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
@@ -56,7 +56,7 @@ function TargetTerritoryClicked(terrDetails)
 		return;
 	end
 	
-	if #terr.NumArmies.SpecialUnits == 0 then
+	if #terr.NumArmies.SpecialUnits > 0 then
 		wrongInputLabel.SetText("You cannot buy territories that have special units");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
