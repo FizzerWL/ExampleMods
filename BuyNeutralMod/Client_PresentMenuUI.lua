@@ -27,7 +27,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	CostLabel = UI.CreateLabel(vert).SetText(" ");
 	
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
-	submitButton = UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
+	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
 	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetOnClick(TargetTerritoryClicked);
 end
 
