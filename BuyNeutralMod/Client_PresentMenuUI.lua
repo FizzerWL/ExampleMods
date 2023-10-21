@@ -35,7 +35,7 @@ function showMain()
 	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
 	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetOnClick(function()
 			UI.Destroy(vert);
-			vert = UI.CreateVerticalLayoutGroup(rootParent);
+			vert = UI.CreateVerticalLayoutGroup(root);
 			showMain();
 		end);
 end
