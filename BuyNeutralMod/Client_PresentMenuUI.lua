@@ -18,6 +18,10 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		return;
 	end
 
+	showMain();
+end
+
+function showMain()
 	territoryLabel = UI.CreateLabel(vert).SetText("Click the neutral territory that you want to buy");
 	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	
@@ -30,9 +34,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
 	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false);
 	requestNewTerritoryButton.SetOnClick(function()
-			UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
-			submitButton.SetInteractable(false);
-			requestNewTerritoryButton.SetInteractable(false);
+			showMain();
 		end);
 end
 
