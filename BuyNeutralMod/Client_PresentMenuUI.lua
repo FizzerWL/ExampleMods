@@ -19,23 +19,33 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	end
 
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
-	UI.CreateLabel(row1).SetText("Purchase territory: ");
-	TargetTerritoryBtn = UI.CreateButton(row1).SetText("Select territory...").SetOnClick(TargetTerritoryClicked);
+	territoryLabel = UI.CreateLabel(row1).SetText("Purchase territory: ");
+	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 
 
 	CostLabel = UI.CreateLabel(vert).SetText(" ");
 	
-	UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked);
+	UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
 
 end
 
 
-function TargetTerritoryClicked()
-	local options = map(filter(Game.LatestStanding.Territories, function(t) 
-		return t.FogLevel == WL.StandingFogLevel.Visible and t.OwnerPlayerID == WL.PlayerID.Neutral  --only show unfogged, neutral territories.
-		end), TerritoryButton);
-	UI.PromptFromList("Select the territory you'd like to purchase", options);
+function TargetTerritoryClicked(terrDetails)
+	if UI.IsDestroyed(vert) then
+		-- Dialog was destroyed, so we don't need to intercept the click anymore
+		return WL.CancelClickIntercept; 
+	end
+	if terrDetails == nil then
+		-- We cannot gather information from nil, but we do want a territory to be clicked
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+	end
+
+	local terr = Game.LatestStanding.Territories[terrDetails.ID];
+	for i, v in pairs(WL.FogLevel) do
+		print(i, v);
+	end
 end
+
 function TerritoryButton(terr)
 	local name = Game.Map.Territories[terr.ID].Name;
 	local ret = {};
