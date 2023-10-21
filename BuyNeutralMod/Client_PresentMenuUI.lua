@@ -6,6 +6,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 
 	setMaxSize(450, 250);
 
+	root = rootParent;
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
 
 	if (game.Settings.CommerceGame == false) then
