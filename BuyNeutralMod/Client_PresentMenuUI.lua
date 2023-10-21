@@ -22,7 +22,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	territoryLabel = UI.CreateLabel(row1).SetText("Click the neutral territory that you want to buy");
 	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	
-	wrongInputLabel = UI.CreateLabel(vert).SetColor("#AA0000");
+	wrongInputLabel = UI.CreateLabel(vert).SetColor("#CC0000");
 
 
 	CostLabel = UI.CreateLabel(vert).SetText(" ");
@@ -41,21 +41,24 @@ function TargetTerritoryClicked(terrDetails)
 		-- We cannot gather information from nil, but we do want a territory to be clicked
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	end
-
+	
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
 	
 	if terr.FogLevel == WL.StandingFogLevel.Visible then
 		wrongInputLabel.SetText("The territory must be fully visible for you to be able to buy it");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
-
+	
 	if terr.OwnerPlayerID == WL.PlayerID.Neutral then
 		wrongInputLabel.SetText("You cannot buy a non-neutral territory");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
-
+	
 	if #terr.NumArmies.SpecialUnits == 0 then
 		wrongInputLabel.SetText("You cannot buy territories that have special units");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
 
