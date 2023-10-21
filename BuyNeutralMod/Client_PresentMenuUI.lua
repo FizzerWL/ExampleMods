@@ -41,7 +41,7 @@ function TargetTerritoryClicked(terrDetails)
 	end
 
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
-	for i, v in pairs(WL.FogLevel) do
+	for i, v in pairs(WL.StandingFogLevel) do
 		print(i, v);
 	end
 end
