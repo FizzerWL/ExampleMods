@@ -28,12 +28,12 @@ function showMain()
 	
 	wrongInputLabel = UI.CreateLabel(vert).SetColor("#CC0000");
 	
-	
 	CostLabel = UI.CreateLabel(vert).SetText(" ").SetColor("#DDDDDD");
 	
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
 	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false).SetColor("#00FF05");
-	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetColor("#23A0FF").SetOnClick(function()
+	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Reselect territory").SetInteractable(false).SetColor("#23A0FF").SetOnClick(function()
+			-- Reset the window
 			UI.Destroy(vert);
 			vert = UI.CreateVerticalLayoutGroup(root);
 			showMain();
@@ -51,6 +51,10 @@ function TargetTerritoryClicked(terrDetails)
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	end
 	
+	if Game == nil then
+		-- An error check that I got from time to time
+		return WL.CancelClickIntercept;
+	end
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
 
 	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
