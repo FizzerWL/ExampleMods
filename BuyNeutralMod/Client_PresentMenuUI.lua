@@ -23,17 +23,17 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 end
 
 function showMain()
-	territoryLabel = UI.CreateLabel(vert).SetText("Click the neutral territory that you want to buy");
+	territoryLabel = UI.CreateLabel(vert).SetText("Click the neutral territory that you want to buy").SetColor("#DDDDDD");
 	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	
 	wrongInputLabel = UI.CreateLabel(vert).SetColor("#CC0000");
 	
 	
-	CostLabel = UI.CreateLabel(vert).SetText(" ");
+	CostLabel = UI.CreateLabel(vert).SetText(" ").SetColor("#DDDDDD");
 	
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
-	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false);
-	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetOnClick(function()
+	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false).SetColor("#00FF05");
+	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Choose new territory").SetInteractable(false).SetColor("#23A0FF").SetOnClick(function()
 			UI.Destroy(vert);
 			vert = UI.CreateVerticalLayoutGroup(root);
 			showMain();
