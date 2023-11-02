@@ -112,9 +112,8 @@ function SubmitClicked()
 	local payload = 'BuyNeutral_' .. TargetTerritoryID;
 
     --Pass a cost to the GameOrderCustom as its fourth argument.  This ensures the game takes the gold away from the player for this order, both on the client and server.
-	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost } );
 	-- I will be placing the order in the purchase phase
-	order.OccursInPhaseOpt = WL.TurnPhase.Purchase;
+	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost }, WL.TurnPhase.Purchase);
 	local orders = Game.Orders;
 	local index = 0;
     for i, order in pairs(orders) do
