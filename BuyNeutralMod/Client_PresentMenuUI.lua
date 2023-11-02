@@ -113,11 +113,17 @@ function SubmitClicked()
 
     --Pass a cost to the GameOrderCustom as its fourth argument.  This ensures the game takes the gold away from the player for this order, both on the client and server.
 	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost } );
-
-	local orders = Game.Orders;
 	-- I will be placing the order in the Buy phase
-	for i, v in pairs(WL.TurnPhase) do
-		print(i, v);
-	end
+	order.OccursInPhaseOpt = WL.TurnPhase.Purchase;
+	local orders = Game.Orders;
+	local index = 0;
+    for i, order in pairs(orders) do
+        if order.OccursInPhase ~= nil and order.OccursInPhase > order.OccursInPhaseOpt then
+            index = i;
+            break;
+        end
+    end
+    if index == 0 then index = #orders + 1; end
+	table.insert(orders, index, order);
 	Game.Orders = orders;
 end
