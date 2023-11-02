@@ -115,6 +115,9 @@ function SubmitClicked()
 	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost } );
 
 	local orders = Game.Orders;
-	table.insert(orders, order);
+	-- I will be placing the order in the Buy phase
+	for i, v in pairs(WL.TurnPhase) do
+		print(i, v);
+	end
 	Game.Orders = orders;
 end
