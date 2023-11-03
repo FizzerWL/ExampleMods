@@ -42,7 +42,7 @@ end
 
 
 function TargetTerritoryClicked(terrDetails)
-	if UI.IsDestroyed(vert) then
+	if UI.IsDestroyed(vert) or Game == nil then
 		-- Dialog was destroyed, so we don't need to intercept the click anymore
 		return WL.CancelClickIntercept; 
 	end
