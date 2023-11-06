@@ -48,14 +48,14 @@ function TargetTerritoryClicked(terrDetails)
 	end
 	if terrDetails == nil then
 		-- We cannot gather information from nil, but we do want a territory to be clicked
-		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	end
 	
 	if Game == nil then
 		-- An error check that I got from time to time
 		return WL.CancelClickIntercept;
 	end
-	print(terrDetails)
+
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
 
 	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
