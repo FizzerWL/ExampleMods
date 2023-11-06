@@ -55,9 +55,7 @@ function TargetTerritoryClicked(terrDetails)
 		-- An error check that I got from time to time
 		return WL.CancelClickIntercept;
 	end
-	for i, v in pairs(terrDetails) do
-		print(i, v);
-	end
+	print(terrDetails)
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
 
 	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
