@@ -33,14 +33,15 @@ function showMain()
 	
 	local row1 = UI.CreateHorizontalLayoutGroup(vert);
 	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false).SetColor("#00FF05");
-	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Reselect territory").SetInteractable(false).SetColor("#23A0FF").SetOnClick(function()
-			-- Reset the window
-			UI.Destroy(vert);
-			vert = UI.CreateVerticalLayoutGroup(root);
-			showMain();
-		end);
+	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Reselect territory").SetInteractable(false).SetColor("#23A0FF").SetOnClick(resetWindow)
 end
 
+function resetWindow()
+	-- Reset the window
+	UI.Destroy(vert);
+	vert = UI.CreateVerticalLayoutGroup(root);
+	showMain();
+end
 
 function TargetTerritoryClicked(terrDetails)
 	if UI.IsDestroyed(vert) then
@@ -150,9 +151,4 @@ function SubmitClicked()
     if index == 0 then index = #orders + 1; end
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
-	for i, v in pairs(requestNewTerritoryButton) do
-		print(i, v);
-	end
-	local func = requestNewTerritoryButton.GetOnClick();
-	if func ~= nil then func(); end
 end
