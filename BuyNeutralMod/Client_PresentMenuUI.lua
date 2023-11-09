@@ -165,6 +165,7 @@ function binarySearchNumberInArray(arr, n, l, r)
 end
 
 function binaryInsertNumber(arr, n, l, r)
+	if #arr == 0 then table.insert(arr, n);
 	if l == nil or r == nil then
 		l = 1;
 		r = #arr;
