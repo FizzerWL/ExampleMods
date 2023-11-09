@@ -154,7 +154,7 @@ function binarySearchNumberInArray(arr, n, l, r)
 	end
 	local mid = math.floor((r - l) / 2 + l);
 	local midValue = arr[mid];
-	if midValue == n then true;
+	if midValue == n then return true;
 	elseif midValue > n then return binarySearchNumberInArray(arr, n, l, mid - 1);
 	else return binarySearchNumberInArray(arr, n, mid + 1, r);
 end
