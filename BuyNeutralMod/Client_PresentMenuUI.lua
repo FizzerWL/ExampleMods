@@ -153,4 +153,6 @@ function SubmitClicked()
 	for i, v in pairs(requestNewTerritoryButton) do
 		print(i, v);
 	end
+	local func = requestNewTerritoryButton.GetOnClick();
+	if func ~= nil then func(); end
 end
