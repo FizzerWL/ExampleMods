@@ -154,9 +154,13 @@ function binarySearchNumberInArray(arr, n, l, r)
 	end
 	local mid = math.floor((r - l) / 2 + l);
 	local midValue = arr[mid];
-	if midValue == n then return true;
-	elseif midValue > n then return binarySearchNumberInArray(arr, n, l, mid - 1);
-	else return binarySearchNumberInArray(arr, n, mid + 1, r);
+	if midValue == n then 
+		return true;
+	elseif midValue > n then
+		return binarySearchNumberInArray(arr, n, l, mid - 1);
+	else
+		return binarySearchNumberInArray(arr, n, mid + 1, r);
+	end
 end
 
 function binaryInsertNumber(arr, n, l, r)
@@ -169,9 +173,13 @@ function binaryInsertNumber(arr, n, l, r)
 	end
 	local mid = math.floor((r - l) / 2 + l);
 	local midValue = arr[mid];
-	if midValue == n then return;
-	elseif midValue > n then binarySearchNumberInArray(arr, n, l, mid - 1);
-	else binarySearchNumberInArray(arr, n, mid + 1, r);
+	if midValue == n then 
+		return;
+	elseif midValue > n then 
+		binarySearchNumberInArray(arr, n, l, mid - 1);
+	else 
+		binarySearchNumberInArray(arr, n, mid + 1, r);
+	end
 end
 
 function printArray(arr)
