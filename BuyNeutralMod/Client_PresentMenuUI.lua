@@ -61,7 +61,7 @@ function TargetTerritoryClicked(terrDetails)
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
 
 	local purchaseRequests = {};
-	for _, order in ipairs(game.Orders) do
+	for _, order in ipairs(Game.Orders) do
 		if order.OccursInPhase ~= nil and order.OccursInPhase > Phase then
 			break;
 		end
