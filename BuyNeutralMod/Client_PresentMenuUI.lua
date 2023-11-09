@@ -150,5 +150,4 @@ function SubmitClicked()
     if index == 0 then index = #orders + 1; end
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
-	requestNewTerritoryButton.GetIsClicked()();
 end
