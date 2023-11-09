@@ -3,6 +3,7 @@ require('WLUtilities');
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	Game = game;
+	Phase = WL.TurnPhase.Purchase;
 
 	setMaxSize(450, 250);
 
@@ -17,13 +18,6 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	if (game.Us == nil or game.Us.State ~= WL.GamePlayerState.Playing) then
 		UI.CreateLabel(vert).SetText("You cannot purchase neutrals since you're not in the game");
 		return;
-	end
-
-	purchaseRequests = {};
-	for _, order in ipairs(game.Orders) do
-		if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuyNeutral_')) then
-			table.insert(purchaseRequests, tonumber(string.sub(order.Payload, 12)));
-		end
 	end
 
 	showMain();
@@ -65,6 +59,16 @@ function TargetTerritoryClicked(terrDetails)
 	end
 
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
+
+	local purchaseRequests = {};
+	for _, order in ipairs(game.Orders) do
+		if order.OccursInPhase ~= nil and order.OccursInPhase > Phase then
+			break;
+		end
+		if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuyNeutral_')) then
+			table.insert(purchaseRequests, tonumber(string.sub(order.Payload, 12)));
+		end
+	end
 
 	if valueInTable(purchaseRequests, terrDetails.ID) then
 		wrongInputLabel.SetText("You already have a purchase request for this territory");
@@ -134,7 +138,7 @@ function SubmitClicked()
 
     --Pass a cost to the GameOrderCustom as its fourth argument.  This ensures the game takes the gold away from the player for this order, both on the client and server.
 	-- I will be placing the order in the purchase phase
-	local custom = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost }, WL.TurnPhase.Purchase);
+	local custom = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost }, Phase);
 	local orders = Game.Orders;
 	local index = 0;
     for i, order in pairs(orders) do
@@ -146,6 +150,5 @@ function SubmitClicked()
     if index == 0 then index = #orders + 1; end
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
-	table.insert(purchaseRequests, TargetTerritoryID);
 	requestNewTerritoryButton.GetIsClicked()();
 end
