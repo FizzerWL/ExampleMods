@@ -147,4 +147,5 @@ function SubmitClicked()
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
 	table.insert(purchaseRequests, TargetTerritoryID);
+	requestNewTerritoryButton.GetIsClicked()();
 end
