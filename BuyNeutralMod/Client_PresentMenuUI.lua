@@ -51,6 +51,8 @@ end
 
 
 function TargetTerritoryClicked(terrDetails)
+
+	printArray(WL.StandingFogLevel);
 	if UI.IsDestroyed(vert) then
 		-- Dialog was destroyed, so we don't need to intercept the click anymore
 		return WL.CancelClickIntercept; 
