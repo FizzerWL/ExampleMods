@@ -153,6 +153,7 @@ function binarySearchNumberInArray(arr, n, l, r)
 		l = 1;
 		r = #arr;
 	end
+	if l == r then return arr[l] == n; end
 	local mid = math.floor((r - l) / 2 + l);
 	local midValue = arr[mid];
 	if midValue == n then 
