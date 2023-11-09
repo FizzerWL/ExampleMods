@@ -22,10 +22,9 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	purchaseRequests = {};
 	for _, order in ipairs(game.Orders) do
 		if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuyNeutral_')) then
-			table.insert(tonumber(string.sub(order.Payload, 12)));
+			table.insert(purchaseRequests, tonumber(string.sub(order.Payload, 12)));
 		end
 	end
-	table.sort(purchaseRequests);
 
 	printArray(purchaseRequests);
 
@@ -69,7 +68,7 @@ function TargetTerritoryClicked(terrDetails)
 
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
 
-	if binarySearchNumberInArray(purchaseRequests, terrDetails.ID) then
+	if valueInTable(purchaseRequests, terrDetails.ID) then
 		wrongInputLabel.SetText("You already have a purchase request for this territory");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
@@ -143,46 +142,8 @@ function SubmitClicked()
     if index == 0 then index = #orders + 1; end
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
-	binaryInsertNumber(purchaseRequests, TargetTerritoryID);
+	table.insert(purchaseRequests, TargetTerritoryID);
 	printArray(purchaseRequests);
-end
-
-function binarySearchNumberInArray(arr, n, l, r)
-	if #arr == 0 then return false; end
-	if l == nil or r == nil then
-		l = 1;
-		r = #arr;
-	end
-	if l == r then return arr[l] == n; end
-	local mid = math.floor((r - l) / 2 + l);
-	local midValue = arr[mid];
-	if midValue == n then 
-		return true;
-	elseif midValue > n then
-		return binarySearchNumberInArray(arr, n, l, mid - 1);
-	else
-		return binarySearchNumberInArray(arr, n, mid + 1, r);
-	end
-end
-
-function binaryInsertNumber(arr, n, l, r)
-	if #arr == 0 then table.insert(arr, n); end
-	if l == nil or r == nil then
-		l = 1;
-		r = #arr;
-	end
-	if l == r then
-		table.insert(arr, l, n);
-	end
-	local mid = math.floor((r - l) / 2 + l);
-	local midValue = arr[mid];
-	if midValue == n then 
-		return;
-	elseif midValue > n then 
-		binarySearchNumberInArray(arr, n, l, mid - 1);
-	else 
-		binarySearchNumberInArray(arr, n, mid + 1, r);
-	end
 end
 
 function printArray(arr)
