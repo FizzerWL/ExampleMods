@@ -19,6 +19,16 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		return;
 	end
 
+	purchaseRequests = {};
+	for _, order in ipairs(game.Orders) do
+		if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuyNeutral_')) then
+			table.insert(tonumber(string.sub(order.Payload, 12)));
+		end
+	end
+	table.sort(purchaseRequests);
+
+	printArray(purchaseRequests);
+
 	showMain();
 end
 
@@ -42,10 +52,11 @@ end
 
 
 function TargetTerritoryClicked(terrDetails)
-	if UI.IsDestroyed(vert) or Game == nil then
+	if UI.IsDestroyed(vert) then
 		-- Dialog was destroyed, so we don't need to intercept the click anymore
 		return WL.CancelClickIntercept; 
 	end
+
 	if terrDetails == nil then
 		-- We cannot gather information from nil, but we do want a territory to be clicked
 		return UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
@@ -57,6 +68,12 @@ function TargetTerritoryClicked(terrDetails)
 	end
 
 	local terr = Game.LatestStanding.Territories[terrDetails.ID];
+
+	if binarySearchNumberInArray(purchaseRequests, terrDetails.ID) then
+		wrongInputLabel.SetText("You already have a purchase request for this territory");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;
+	end
 
 	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
 		wrongInputLabel.SetText("The territory must be fully visible for you to be able to buy it");
@@ -126,4 +143,39 @@ function SubmitClicked()
     if index == 0 then index = #orders + 1; end
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
+	binaryInsertNumber(purchaseRequests, TargetTerritoryID);
+	printArray(purchaseRequests);
+end
+
+function binarySearchNumberInArray(arr, n, l, r)
+	if l == nil or r == nil then
+		l = 1;
+		r = #arr;
+	end
+	local mid = math.floor((r - l) / 2 + l);
+	local midValue = arr[mid];
+	if midValue == n then true;
+	elseif midValue > n then return binarySearchNumberInArray(arr, n, l, mid - 1);
+	else return binarySearchNumberInArray(arr, n, mid + 1, r);
+end
+
+function binaryInsertNumber(arr, n, l, r)
+	if l == nil or r == nil then
+		l = 1;
+		r = #arr;
+	end
+	if l == r then
+		table.insert(arr, l, n);
+	end
+	local mid = math.floor((r - l) / 2 + l);
+	local midValue = arr[mid];
+	if midValue == n then return;
+	elseif midValue > n then binarySearchNumberInArray(arr, n, l, mid - 1);
+	else binarySearchNumberInArray(arr, n, mid + 1, r);
+end
+
+function printArray(arr)
+	for i, v in ipairs(arr) do
+		print(i, v);
+	end
 end
