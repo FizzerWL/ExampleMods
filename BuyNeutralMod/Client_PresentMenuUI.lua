@@ -150,7 +150,7 @@ function SubmitClicked()
     if index == 0 then index = #orders + 1; end
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
-	for i, v in ipairs(requestNewTerritoryButton.readableKeys) do
+	for _, v in pairs(requestNewTerritoryButton) do
 		print(v, requestNewTerritoryButton[v]);
 	end
 end
