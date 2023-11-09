@@ -26,10 +26,6 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		end
 	end
 
-	for i, v in pairs(WL.StandingFogLevel) do
-		print(i, v);
-	end
-
 	showMain();
 end
 
@@ -76,20 +72,26 @@ function TargetTerritoryClicked(terrDetails)
 		return;
 	end
 
+	if terr.FogLevel == WL.StandingFogLevel.You then
+		wrongInputLabel.SetText("You cannot purchase a territory you already own");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;	
+	end
+
 	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
-		wrongInputLabel.SetText("The territory must be fully visible for you to be able to buy it");
+		wrongInputLabel.SetText("The territory must be fully visible for you to be able to purchase it");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
 	
 	if terr.OwnerPlayerID ~= WL.PlayerID.Neutral then
-		wrongInputLabel.SetText("You cannot buy a non-neutral territory");
+		wrongInputLabel.SetText("You cannot purchase a non-neutral territory");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
 	
 	if #terr.NumArmies.SpecialUnits > 0 then
-		wrongInputLabel.SetText("You cannot buy territories that have special units");
+		wrongInputLabel.SetText("You cannot purchase territories that have special units");
 		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 		return;
 	end
