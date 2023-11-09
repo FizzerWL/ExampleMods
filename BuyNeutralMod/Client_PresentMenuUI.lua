@@ -148,6 +148,7 @@ function SubmitClicked()
 end
 
 function binarySearchNumberInArray(arr, n, l, r)
+	if #arr == 0 then return false; end
 	if l == nil or r == nil then
 		l = 1;
 		r = #arr;
