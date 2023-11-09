@@ -26,7 +26,9 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		end
 	end
 
-	printArray(purchaseRequests);
+	for i, v in pairs(WL.StandingFogLevel) do
+		print(i, v);
+	end
 
 	showMain();
 end
@@ -51,8 +53,6 @@ end
 
 
 function TargetTerritoryClicked(terrDetails)
-
-	printArray(WL.StandingFogLevel);
 	if UI.IsDestroyed(vert) then
 		-- Dialog was destroyed, so we don't need to intercept the click anymore
 		return WL.CancelClickIntercept; 
@@ -145,11 +145,4 @@ function SubmitClicked()
 	table.insert(orders, index, custom);
 	Game.Orders = orders;
 	table.insert(purchaseRequests, TargetTerritoryID);
-	printArray(purchaseRequests);
-end
-
-function printArray(arr)
-	for i, v in ipairs(arr) do
-		print(i, v);
-	end
 end
