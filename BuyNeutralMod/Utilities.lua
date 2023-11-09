@@ -61,3 +61,17 @@ end
 function startsWith(str, sub)
 	return string.sub(str, 1, string.len(sub)) == sub;
 end
+
+function valueInTable(arr, v)
+	for _, v2 in pairs(arr) do
+		if v == v2 then return true; end
+	end
+	return false;
+end
+
+function printArray(arr)
+	for i, v in ipairs(arr) do
+		print(i, v);
+	end
+end
+
