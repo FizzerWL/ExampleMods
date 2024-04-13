@@ -3,9 +3,11 @@ require('WLUtilities');
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	Game = game;
+	Phase = WL.TurnPhase.Purchase;
 
 	setMaxSize(450, 250);
 
+	root = rootParent;
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
 
 	if (game.Settings.CommerceGame == false) then
@@ -18,35 +20,98 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		return;
 	end
 
-	local row1 = UI.CreateHorizontalLayoutGroup(vert);
-	UI.CreateLabel(row1).SetText("Purchase territory: ");
-	TargetTerritoryBtn = UI.CreateButton(row1).SetText("Select territory...").SetOnClick(TargetTerritoryClicked);
+	showMain();
+end
 
-
-	CostLabel = UI.CreateLabel(vert).SetText(" ");
+function showMain()
+	territoryLabel = UI.CreateLabel(vert).SetText("Click the neutral territory that you want to buy").SetColor("#DDDDDD");
+	UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
 	
-	UI.CreateButton(vert).SetText("Purchase").SetOnClick(SubmitClicked);
-
+	wrongInputLabel = UI.CreateLabel(vert).SetColor("#CC0000");
+	
+	CostLabel = UI.CreateLabel(vert).SetText(" ").SetColor("#DDDDDD");
+	
+	local row1 = UI.CreateHorizontalLayoutGroup(vert);
+	submitButton = UI.CreateButton(row1).SetText("Purchase").SetOnClick(SubmitClicked).SetInteractable(false).SetColor("#00FF05");
+	requestNewTerritoryButton = UI.CreateButton(row1).SetText("Reselect territory").SetInteractable(false).SetColor("#23A0FF").SetOnClick(resetWindow)
 end
 
-
-function TargetTerritoryClicked()
-	local options = map(filter(Game.LatestStanding.Territories, function(t) 
-		return t.FogLevel == WL.StandingFogLevel.Visible and t.OwnerPlayerID == WL.PlayerID.Neutral  --only show unfogged, neutral territories.
-		end), TerritoryButton);
-	UI.PromptFromList("Select the territory you'd like to purchase", options);
+function resetWindow()
+	-- Reset the window
+	UI.Destroy(vert);
+	vert = UI.CreateVerticalLayoutGroup(root);
+	showMain();
 end
-function TerritoryButton(terr)
-	local name = Game.Map.Territories[terr.ID].Name;
-	local ret = {};
-	ret["text"] = name;
-	ret["selected"] = function()
-		TargetTerritoryBtn.SetText(name);
-		TargetTerritoryID = terr.ID;
-		Cost = terr.NumArmies.NumArmies * Mod.Settings.CostPerNeutralArmy;
-		CostLabel.SetText("Cost = " .. Cost .. " gold");
+
+function TargetTerritoryClicked(terrDetails)
+	if UI.IsDestroyed(vert) then
+		-- Dialog was destroyed, so we don't need to intercept the click anymore
+		return WL.CancelClickIntercept; 
 	end
-	return ret;
+
+	if terrDetails == nil then
+		-- We cannot gather information from nil, but we do want a territory to be clicked
+		return UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+	end
+	
+	if Game == nil then
+		-- An error check that I got from time to time
+		return WL.CancelClickIntercept;
+	end
+
+	local terr = Game.LatestStanding.Territories[terrDetails.ID];
+
+	local purchaseRequests = {};
+	for _, order in ipairs(Game.Orders) do
+		if order.OccursInPhase ~= nil and order.OccursInPhase > Phase then
+			break;
+		end
+		if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuyNeutral_')) then
+			table.insert(purchaseRequests, tonumber(string.sub(order.Payload, 12)));
+		end
+	end
+
+	if valueInTable(purchaseRequests, terrDetails.ID) then
+		wrongInputLabel.SetText("You already have a purchase request for this territory");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;
+	end
+
+	if terr.FogLevel == WL.StandingFogLevel.You then
+		wrongInputLabel.SetText("You cannot purchase a territory you already own");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;	
+	end
+
+	if terr.FogLevel ~= WL.StandingFogLevel.Visible then
+		wrongInputLabel.SetText("The territory must be fully visible for you to be able to purchase it");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;
+	end
+	
+	if terr.OwnerPlayerID ~= WL.PlayerID.Neutral then
+		wrongInputLabel.SetText("You cannot purchase a non-neutral territory");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;
+	end
+	
+	if #terr.NumArmies.SpecialUnits > 0 then
+		wrongInputLabel.SetText("You cannot purchase territories that have special units");
+		UI.InterceptNextTerritoryClick(TargetTerritoryClicked);
+		return;
+	end
+
+	wrongInputLabel.SetText(" ");
+
+	territoryLabel.SetText("Chosen territory: " .. Game.Map.Territories[terrDetails.ID].Name);
+
+	Cost = Mod.Settings.CostPerNeutralArmy * terr.NumArmies.NumArmies;
+	CostLabel.SetText("This territory costs " .. Cost .. " gold");
+
+	TargetTerritoryID = terrDetails.ID;
+
+	submitButton.SetInteractable(true);
+	requestNewTerritoryButton.SetInteractable(true);
 end
 
 function SubmitClicked()
@@ -64,7 +129,7 @@ function SubmitClicked()
 	end
 	
 	if (goldHave < Cost) then
-		UI.Alert("You can't afford it.  You have " .. goldHave .. " gold and it costs " .. Cost);
+		UI.Alert("You can't afford it. You have " .. goldHave .. " gold and it costs " .. Cost);
 		return;
 	end
 
@@ -73,9 +138,18 @@ function SubmitClicked()
 	local payload = 'BuyNeutral_' .. TargetTerritoryID;
 
     --Pass a cost to the GameOrderCustom as its fourth argument.  This ensures the game takes the gold away from the player for this order, both on the client and server.
-	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost } );
-
+	-- I will be placing the order in the purchase phase
+	local custom = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost }, Phase);
 	local orders = Game.Orders;
-	table.insert(orders, order);
+	local index = 0;
+    for i, order in pairs(orders) do
+        if order.OccursInPhase ~= nil and order.OccursInPhase > custom.OccursInPhaseOpt then
+            index = i;
+            break;
+        end
+    end
+    if index == 0 then index = #orders + 1; end
+	table.insert(orders, index, custom);
 	Game.Orders = orders;
+	resetWindow();
 end
