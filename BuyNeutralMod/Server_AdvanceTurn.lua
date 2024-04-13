@@ -28,10 +28,11 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		end
 
 		--All checks passed!  Let's change ownership
+		local td = game.Map.Territories[targetTerritoryID];
 		local mod = WL.TerritoryModification.Create(targetTerritoryID);
 		mod.SetOwnerOpt = order.PlayerID;
-		local event = WL.GameOrderEvent.Create(order.PlayerID, "Purchased " .. game.Map.Territories[targetTerritoryID].Name, {}, {mod});
-		event.JumpToActionSpotOpt = WL.RectangleVM.Create(game.Map.Territories[targetTerritoryID].MiddlePointX, game.Map.Territories[targetTerritoryID].MiddlePointY, game.Map.Territories[targetTerritoryID].MiddlePointX, game.Map.Territories[targetTerritoryID].MiddlePointY);
+		local event = WL.GameOrderEvent.Create(order.PlayerID, "Purchased " .. td.Name, {}, {mod});
+		event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
 		addNewOrder(event, true);
 	end
 end
