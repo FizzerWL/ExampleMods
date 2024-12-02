@@ -20,6 +20,13 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 		return;
 	end
 
+	-- It is possible to open the menu in No Luck Cycle, manual distribution
+	-- Meaning that the `LatestStanding` is not initialized yet?
+	if (game.LatestStanding == nil) then
+		UI.CreateLabel(vert).SetText("You cannot use the mod currently, something is not right");
+		return;
+	end
+
 	showMain();
 end
 
