@@ -1,0 +1,1 @@
+Allows you to exclude specific bonuses from being distrbuted to.  This is only supported in Automatic Territory distribution games using the Random Warlords distrubution (or any similar distribution that gives one territory per bonus).
