@@ -6,9 +6,14 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	Phase = WL.TurnPhase.Purchase;
 
 	setMaxSize(450, 250);
-
 	root = rootParent;
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
+
+	if (game.LatestStanding == nil) then
+		UI.CreateLabel(vert).SetText("Cannot use until game has begun");
+		return;
+	end
+
 
 	if (game.Settings.CommerceGame == false) then
 		UI.CreateLabel(vert).SetText("This mod only works in commerce games.  This isn't a commerce game.");

@@ -9,13 +9,17 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 
 	local vert = UI.CreateVerticalLayoutGroup(rootParent);
 
+
 	if (game.Settings.CommerceGame == false) then
 		UI.CreateLabel(vert).SetText("This mod only works in commerce games.  This isn't a commerce game.");
 		return;
 	end
-
 	if (game.Us == nil or game.Us.State ~= WL.GamePlayerState.Playing) then
 		UI.CreateLabel(vert).SetText("You cannot gift gold since you're not in the game");
+		return;
+	end
+	if (game.LatestStanding == nil) then
+		UI.CreateLabel(vert).SetText("Cannot use until game has begun");
 		return;
 	end
 

@@ -15,6 +15,11 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
 
+	if (game.LatestStanding == nil) then
+		UI.CreateLabel(vert).SetText("Cannot use until game has begun");
+		return;
+	end
+
 	if (game.Us == nil) then
 		UI.CreateLabel(vert).SetText("You cannot gift armies since you're not in the game");
 		return;
