@@ -1,0 +1,1 @@
+This mod allows players to create a tank by playing a card.  Tanks are worth 10 armies in combat by default, and they cannot be partially damaged.  They are only destroyed if they take 10 damage in a single combat.
