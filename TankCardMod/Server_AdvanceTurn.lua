@@ -7,6 +7,10 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
         local cardGame = game.Settings.Cards[order.CardID];
         
         local targetTerritoryID = tonumber(string.sub(order.ModData, 12))
+		if (game.ServerGame.LatestTurnStanding.Territories[targetTerritoryID].OwnerPlayerID ~= order.PlayerID) then
+			return; --not our territory
+		end
+
 		local tankPower = 10;
 
 		local builder = WL.CustomSpecialUnitBuilder.Create(order.PlayerID);
