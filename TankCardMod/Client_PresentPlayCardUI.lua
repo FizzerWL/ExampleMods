@@ -4,8 +4,14 @@ require('Utilities')
 function Client_PresentPlayCardUI(game, cardInstance, playCard)
     Game = game;
 
+    --If this dialog is already open, close the previous one. This prevents two copies of it from being open at once which can cause errors due to only saving one instance of TargetTerritoryBtn
+    if (Close ~= nil) then
+        Close();
+    end
+
     --If your mod has multiple cards, you can look at game.Settings.Cards[cardInstance.CardID].Name to see which one was played
     game.CreateDialog(function(rootParent, setMaxSize, setScrollable, game, close)
+        Close = close;
         setMaxSize(400, 200);
         local vert = UI.CreateVerticalLayoutGroup(rootParent).SetFlexibleWidth(1); --set flexible width so things don't jump around while we change InstructionLabel
 
