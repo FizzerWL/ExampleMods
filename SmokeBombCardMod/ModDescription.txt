@@ -1,0 +1,1 @@
+This mod allows players to change some territories to fogged for a turn for all players.  When playing the card, you can select a territory.  That territory and all adjacent territories will become fogged for all players, including the player who played the card.  However, a player's own territories will never be fogged to themselves.
