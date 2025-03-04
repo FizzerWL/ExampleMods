@@ -1,7 +1,8 @@
 require('Utilities')
 
 --Called when the player attempts to play your card.  You can call playCard directly if no UI is needed, or you can call game.CreateDialog to present the player with options.
-function Client_PresentPlayCardUI(game, cardInstance, playCard)
+--If your mod has multiple cards, you can look at game.Settings.Cards[cardInstance.CardID].Name to see which one was played
+function Client_PresentPlayCardUI(game, cardInstance, playCard, closeCardsDialog)
     Game = game;
 
     --If this dialog is already open, close the previous one. This prevents two copies of it from being open at once which can cause errors due to only saving one instance of TargetTerritoryBtn
@@ -9,7 +10,10 @@ function Client_PresentPlayCardUI(game, cardInstance, playCard)
         Close();
     end
 
-    --If your mod has multiple cards, you can look at game.Settings.Cards[cardInstance.CardID].Name to see which one was played
+    if (WL.IsVersionOrHigher("5.34")) then --closeCardsDialog callback did not exist prior to 5.34
+        closeCardsDialog();
+    end
+
     game.CreateDialog(function(rootParent, setMaxSize, setScrollable, game, close)
         Close = close;
         setMaxSize(400, 200);

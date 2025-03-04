@@ -2,18 +2,16 @@ require("Utilities");
 
 function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrder)
     if (order.proxyType == 'GameOrderPlayCardCustom' and startsWith(order.ModData, "SmokeBomb_")) then
-        local cardGame = game.Settings.Cards[order.CardID];
-
         local targetTerritoryID = tonumber(string.sub(order.ModData, 11));
+		
 		local td = game.Map.Territories[targetTerritoryID];
-
 		local terrs = {targetTerritoryID};
 		for k,v in pairs(td.ConnectedTo) do
 			table.insert(terrs, k);
 		end
 
 		local priority = 7000; -- between 6000 and 8999 means it won't obscure a player's own territories
-		local fogMod = WL.FogMod.Create( 'Obscured by smoke bomb', WL.StandingFogLevel.Fogged, priority, terrs, nil);
+		local fogMod = WL.FogMod.Create('Obscured by smoke bomb', WL.StandingFogLevel.Fogged, priority, terrs, nil);
 
 		local event = WL.GameOrderEvent.Create(order.PlayerID, 'Detonated a smoke bomb', {});
 		event.FogModsOpt = {fogMod};

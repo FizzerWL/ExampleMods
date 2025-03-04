@@ -24,7 +24,7 @@ function Client_PresentPlayCardUI(game, cardInstance, playCard)
                 return;
             end
 
-            if (playCard("Detonate a smoke bomb on " .. TargetTerritoryName, "SmokeBomb_" .. TargetTerritoryID, WL.TurnPhase.Attacks)) then
+            if (playCard("Detonate a smoke bomb on " .. TargetTerritoryName, "SmokeBomb_" .. TargetTerritoryID, WL.TurnPhase.Deploys)) then
                 close();
             end
         end);
