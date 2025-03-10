@@ -40,6 +40,11 @@ function SelectTerritoryClicked()
 end
 
 function TerritoryClicked(terrDetails)
+	if UI.IsDestroyed(SelectTerritoryBtn) then
+		-- Dialog was destroyed, so we don't need to intercept the click anymore
+		return WL.CancelClickIntercept; 
+	end
+	
 	SelectTerritoryBtn.SetInteractable(true);
 
 	if (terrDetails == nil) then

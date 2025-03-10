@@ -45,6 +45,10 @@ end
 
 
 function TerritoryClicked(terrDetails)
+	if UI.IsDestroyed(TargetTerritoryBtn) then
+		-- Dialog was destroyed, so we don't need to intercept the click anymore
+		return WL.CancelClickIntercept; 
+	end
 	TargetTerritoryBtn.SetInteractable(true);
 
     local terr = Game.LatestStanding.Territories[terrDetails.ID];
