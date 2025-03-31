@@ -48,7 +48,17 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 			modArmies(randomFromArray(targetTerritories), 1);
 		end
 		
-		addNewOrder(WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, terrMods));
+
+		local event = WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, terrMods);
+
+		if (WL.IsVersionOrHigher and WL.IsVersionOrHigher("5.34.1")) then
+			local td = game.Map.Territories[targetTerritoryID];
+			event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+			event.TerritoryAnnotationsOpt = { [targetTerritoryID] = WL.TerritoryAnnotation.Create("Gift " .. numArmies) };
+		end
+	
+
+		addNewOrder(event);
 		
 
 		skipThisOrder(WL.ModOrderControl.SkipAndSupressSkippedMessage); --we replaced the GameOrderCustom with a GameOrderEvent, so get rid of the custom order.  There wouldn't be any harm in leaving it there, but it adds clutter to the orders list so it's better to get rid of it.

@@ -1,10 +1,11 @@
 require('Utilities');
 
-function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
+function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close)
 	Game = game;
+	Close = close;
 	SubmitBtn = nil;
 
-	setMaxSize(450, 280);
+	setMaxSize(450, 380);
 
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
 
@@ -26,6 +27,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	local row2 = UI.CreateHorizontalLayoutGroup(vert);
 	UI.CreateLabel(row2).SetText("Gift armies from this territory: ");
 	TargetTerritoryBtn = UI.CreateButton(row2).SetText("Select source territory...").SetOnClick(TargetTerritoryClicked);
+	TargetTerritoryInstructionLabel = UI.CreateLabel(vert).SetText("").SetPreferredHeight(70); --give it a fixed height just so things don't jump around as we change its text
 
 end
 
@@ -47,21 +49,32 @@ function PlayerButton(player)
 end
 
 function TargetTerritoryClicked()
-	local options = map(filter(Game.LatestStanding.Territories, function(t) return t.OwnerPlayerID == Game.Us.ID end), TerritoryButton);
-	UI.PromptFromList("Select the territory you'd like to take armies from", options);
+	UI.InterceptNextTerritoryClick(TerritoryClicked);
+	TargetTerritoryInstructionLabel.SetText("Please click on the territory you wish to gift armies from.  If needed, you can move this dialog out of the way.");
+	TargetTerritoryBtn.SetInteractable(false);
 end
-function TerritoryButton(terr)
-	local name = Game.Map.Territories[terr.ID].Name;
-	local ret = {};
-	ret["text"] = name;
-	ret["selected"] = function()
-		TargetTerritoryBtn.SetText(name);
-		TargetTerritoryID = terr.ID;
 
+function TerritoryClicked(terrDetails)
+	if UI.IsDestroyed(TargetTerritoryBtn) then
+		-- Dialog was destroyed, so we don't need to intercept the click anymore
+		return WL.CancelClickIntercept; 
+	end
+
+	TargetTerritoryBtn.SetInteractable(true);
+
+	if (terrDetails == nil) then
+		--The click request was cancelled. 
+		TargetTerritoryInstructionLabel.SetText("");
+	else
+		--Territory was clicked, remember it
+		TargetTerritoryInstructionLabel.SetText("Selected territory: " .. terrDetails.Name);
+		SelectedTerritory = terrDetails;
 		CheckCreateFinalStep();
 	end
+
 	return ret;
 end
+
 
 function CheckCreateFinalStep()
 	if (SubmitBtn == nil) then
@@ -73,16 +86,25 @@ function CheckCreateFinalStep()
 		SubmitBtn = UI.CreateButton(vert).SetText("Gift").SetOnClick(SubmitClicked);
 	end
 
-	local maxArmies = Game.LatestStanding.Territories[TargetTerritoryID].NumArmies.NumArmies;
+	local maxArmies = Game.LatestStanding.Territories[SelectedTerritory.ID].NumArmies.NumArmies;
 	NumArmiesInput.SetSliderMaxValue(maxArmies).SetValue(maxArmies);
 end
 
 function SubmitClicked()
-	local msg = 'Gifting ' .. NumArmiesInput.GetValue() .. ' armies from ' .. Game.Map.Territories[TargetTerritoryID].Name .. ' to ' .. Game.Game.Players[TargetPlayerID].DisplayName(nil, false);
+	local numArmies = NumArmiesInput.GetValue();
+	local msg = 'Gifting ' .. numArmies .. ' armies from ' .. Game.Map.Territories[SelectedTerritory.ID].Name .. ' to ' .. Game.Game.Players[TargetPlayerID].DisplayName(nil, false);
 
-	local payload = 'GiftArmies_' .. NumArmiesInput.GetValue() .. ',' .. TargetTerritoryID .. ',' .. TargetPlayerID;
+	local payload = 'GiftArmies_' .. numArmies .. ',' .. SelectedTerritory.ID .. ',' .. TargetPlayerID;
+	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload);
+
+	if (WL.IsVersionOrHigher and WL.IsVersionOrHigher("5.34.1")) then
+		order.JumpToActionSpotOpt = WL.RectangleVM.Create(SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY, SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY);
+		order.TerritoryAnnotationsOpt = { [SelectedTerritory.ID] = WL.TerritoryAnnotation.Create("Gift " .. numArmies) };
+	end
 
 	local orders = Game.Orders;
-	table.insert(orders, WL.GameOrderCustom.Create(Game.Us.ID, msg, payload));
+	table.insert(orders, order);
 	Game.Orders = orders;
+
+	Close();
 end
