@@ -51,7 +51,7 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 
 		local event = WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, terrMods);
 
-		if (WL.IsVersionOrHigher and WL.IsVersionOrHigher("5.34.1")) then
+		if (WL.IsVersionOrHigher("5.34.1")) then
 			local td = game.Map.Territories[targetTerritoryID];
 			event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
 			event.TerritoryAnnotationsOpt = { [targetTerritoryID] = WL.TerritoryAnnotation.Create("Gift " .. numArmies) };

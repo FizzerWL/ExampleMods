@@ -93,7 +93,16 @@ function BuildForts(game, addNewOrder)
 
 		local pendingFort = first(pendingFortGroup);
 	
-		addNewOrder(WL.GameOrderEvent.Create(pendingFort.PlayerID, pendingFort.Message, {}, {terrMod}));
+		local event = WL.GameOrderEvent.Create(pendingFort.PlayerID, pendingFort.Message, {}, {terrMod});
+
+		local td = game.Map.Territories[territoryID];
+		event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+		if (WL.IsVersionOrHigher("5.34.1")) then
+			event.TerritoryAnnotationsOpt = { [territoryID] = WL.TerritoryAnnotation.Create("Build Fort") };
+		end
+
+
+		addNewOrder(event);
 	end
 
 	priv.PendingForts = nil;

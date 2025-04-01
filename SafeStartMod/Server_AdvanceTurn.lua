@@ -12,8 +12,16 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		and not IsDestinationNeutral(game, order)) then --is the destination owned by neutral? (without this check we'd stop people from attacking neutrals)
 
 		skipThisOrder(WL.ModOrderControl.SkipAndSupressSkippedMessage); --skip it
-		local msg = 'Safe start mod skipped attack to ' .. game.Map.Territories[order.To].Name .. ' from ' .. game.Map.Territories[order.From].Name;
-		addNewOrder(WL.GameOrderEvent.Create(order.PlayerID, msg, {}, {}));
+		local toTD = game.Map.Territories[order.To];
+		local msg = 'Safe start mod skipped attack to ' .. toTD.Name .. ' from ' .. game.Map.Territories[order.From].Name;
+		local event = WL.GameOrderEvent.Create(order.PlayerID, msg, {}, {});
+
+		if (WL.IsVersionOrHigher("5.34.1")) then
+			event.JumpToActionSpotOpt = WL.RectangleVM.Create(toTD.MiddlePointX, toTD.MiddlePointY, toTD.MiddlePointX, toTD.MiddlePointY);
+			event.TerritoryAnnotationsOpt = { [toTD.ID] = WL.TerritoryAnnotation.Create("Safe Start") };
+		end
+
+		addNewOrder(event);
 	end
 
 end

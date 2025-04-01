@@ -1,12 +1,16 @@
 require('Utilities')
 
 --Called when the player attempts to play your card.  You can call playCard directly if no UI is needed, or you can call game.CreateDialog to present the player with options.
-function Client_PresentPlayCardUI(game, cardInstance, playCard)
+function Client_PresentPlayCardUI(game, cardInstance, playCard, closeCardsDialog)
     Game = game;
 
     --If this dialog is already open, close the previous one. This prevents two copies of it from being open at once which can cause errors due to only saving one instance of TargetTerritoryBtn
     if (Close ~= nil) then
         Close();
+    end
+    
+    if (WL.IsVersionOrHigher("5.34")) then --closeCardsDialog callback did not exist prior to 5.34
+        closeCardsDialog();
     end
 
     --If your mod has multiple cards, you can look at game.Settings.Cards[cardInstance.CardID].Name to see which one was played
@@ -23,8 +27,18 @@ function Client_PresentPlayCardUI(game, cardInstance, playCard)
                 TargetTerritoryInstructionLabel.SetText("You must select a territory first");
                 return;
             end
+            local td = game.Map.Territories[TargetTerritoryID];
 
-            if (playCard("Detonate a smoke bomb on " .. TargetTerritoryName, "SmokeBomb_" .. TargetTerritoryID, WL.TurnPhase.Deploys)) then
+            local annotations = nil;
+            local jumpToSpot = nil;
+
+            if (WL.IsVersionOrHigher("5.34.1")) then
+                annotations = { [TargetTerritoryID] = WL.TerritoryAnnotation.Create("Smoke Bomb") };
+                jumpToSpot = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+            end
+
+
+            if (playCard("Detonate a smoke bomb on " .. TargetTerritoryName, "SmokeBomb_" .. TargetTerritoryID, WL.TurnPhase.Deploys, annotations, jumpToSpot)) then
                 close();
             end
         end);

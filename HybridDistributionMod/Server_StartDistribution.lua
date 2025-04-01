@@ -1,12 +1,6 @@
 require('Utilities');
 
 function Server_StartDistribution(game, standing)
-    
-	if (not WL.IsVersionOrHigher or not WL.IsVersionOrHigher("5.17")) then
-		error("You must update your app to the latest version to use the Hybrid Distribution mod");
-		return;
-	end
-
     local terrs = {};
 
     --Collect every territory that we could distribute to

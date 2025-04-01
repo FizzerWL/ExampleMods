@@ -3,6 +3,7 @@ require("Utilities");
 function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrder)
     if (order.proxyType == 'GameOrderPlayCardCustom' and startsWith(order.ModData, "SmokeBomb_")) then
         local targetTerritoryID = tonumber(string.sub(order.ModData, 11));
+		local td = game.Map.Territories[targetTerritoryID];
 		
 		local td = game.Map.Territories[targetTerritoryID];
 		local terrs = {targetTerritoryID};
@@ -15,6 +16,12 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 
 		local event = WL.GameOrderEvent.Create(order.PlayerID, 'Detonated a smoke bomb', {});
 		event.FogModsOpt = {fogMod};
+		event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+
+		if (WL.IsVersionOrHigher("5.34.1")) then
+			event.TerritoryAnnotationsOpt = { [targetTerritoryID] = WL.TerritoryAnnotation.Create("Smoke Bomb") };
+		end
+		
 		addNewOrder(event);
 
 		--Store the ID so we can later disable it

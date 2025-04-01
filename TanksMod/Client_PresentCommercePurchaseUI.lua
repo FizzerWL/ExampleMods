@@ -96,8 +96,15 @@ function CompletePurchaseClicked()
 	local msg = 'Buy a tank on ' .. SelectedTerritory.Name;
 	local payload = 'BuyTank_' .. SelectedTerritory.ID;
 
+	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload,  { [WL.ResourceType.Gold] = Mod.Settings.CostToBuyTank } );
+
+	if (WL.IsVersionOrHigher("5.34.1")) then
+		order.JumpToActionSpotOpt = WL.RectangleVM.Create(SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY, SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY);
+		order.TerritoryAnnotationsOpt = { [SelectedTerritory.ID] = WL.TerritoryAnnotation.Create("Purchase Tank") };
+	end
+
 	local orders = Game.Orders;
-	table.insert(orders, WL.GameOrderCustom.Create(Game.Us.ID, msg, payload,  { [WL.ResourceType.Gold] = Mod.Settings.CostToBuyTank } ));
+	table.insert(orders, order);
 	Game.Orders = orders;
 
 	Close2();

@@ -2,7 +2,7 @@
 
 function Client_PresentConfigureUI(rootParent)
 
-    if (not WL.IsVersionOrHigher or not WL.IsVersionOrHigher("5.33")) then
+    if (not WL.IsVersionOrHigher("5.33")) then
 		UI.Alert("You must update your app to the latest version to use the Smoke Bomb Card mod");
 		return;
 	end

@@ -1,14 +1,8 @@
 require('Utilities');
 
-function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
-	
-	if (not WL.IsVersionOrHigher or not WL.IsVersionOrHigher("5.17")) then
-		UI.Alert("You must update your app to the latest version to use this mod");
-		return;
-	end
-
-
+function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close)
 	Game = game;
+	Close = close;
 	SubmitBtn = nil;
 
 	setMaxSize(450, 400);
@@ -103,11 +97,22 @@ end
 function SubmitClicked()
 	if (SelectedTerritory == nil or TargetPlayerID == nil) then return; end;
 
-	local msg = 'Gifting ' .. NumArmiesInput.GetValue() .. ' armies from ' .. SelectedTerritory.Name .. ' to ' .. Game.Game.Players[TargetPlayerID].DisplayName(nil, false);
+	local numArmies = NumArmiesInput.GetValue();
+	local msg = 'Gifting ' .. numArmies .. ' armies from ' .. SelectedTerritory.Name .. ' to ' .. Game.Game.Players[TargetPlayerID].DisplayName(nil, false);
 
-	local payload = 'GiftArmies2_' .. NumArmiesInput.GetValue() .. ',' .. SelectedTerritory.ID .. ',' .. TargetPlayerID;
+	local payload = 'GiftArmies2_' .. numArmies .. ',' .. SelectedTerritory.ID .. ',' .. TargetPlayerID;
+
+	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload);
+
+	if (WL.IsVersionOrHigher("5.34.1")) then
+		order.JumpToActionSpotOpt = WL.RectangleVM.Create(SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY, SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY);
+		order.TerritoryAnnotationsOpt = { [SelectedTerritory.ID] = WL.TerritoryAnnotation.Create("Gift " .. numArmies) };
+	end
+
 
 	local orders = Game.Orders;
-	table.insert(orders, WL.GameOrderCustom.Create(Game.Us.ID, msg, payload));
+	table.insert(orders, order);
 	Game.Orders = orders;
+
+	Close();
 end

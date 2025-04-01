@@ -33,6 +33,11 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		mod.SetOwnerOpt = order.PlayerID;
 		local event = WL.GameOrderEvent.Create(order.PlayerID, "Purchased " .. td.Name, {}, {mod});
 		event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+
+		if (WL.IsVersionOrHigher("5.34.1")) then
+			event.TerritoryAnnotationsOpt = { [targetTerritoryID] = WL.TerritoryAnnotation.Create("Buy Neutral") };
+		end
+
 		addNewOrder(event, true);
 	end
 end

@@ -1,12 +1,5 @@
 
 function Client_PresentConfigureUI(rootParent)
-
-	if (not WL.IsVersionOrHigher or not WL.IsVersionOrHigher("5.21")) then
-		UI.Alert("You must update your app to the latest version to use this mod");
-		return;
-	end
-
-
 	local power = Mod.Settings.TankPower;
 	if power == nil then power = 10; end
 

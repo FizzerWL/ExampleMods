@@ -27,8 +27,17 @@ function Client_PresentPlayCardUI(game, cardInstance, playCard, closeCardsDialog
                 TargetTerritoryInstructionLabel.SetText("You must select a territory first");
                 return;
             end
+            local td = game.Map.Territories[TargetTerritoryID];
 
-            if (playCard("Create a tank on " .. TargetTerritoryName, "CreateTank_" .. TargetTerritoryID, WL.TurnPhase.Attacks)) then
+            local annotations = nil;
+            local jumpToSpot = nil;
+
+            if (WL.IsVersionOrHigher("5.34.1")) then
+                annotations = { [TargetTerritoryID] = WL.TerritoryAnnotation.Create("Build Tank") };
+                jumpToSpot = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+            end
+
+            if (playCard("Create a tank on " .. TargetTerritoryName, "CreateTank_" .. TargetTerritoryID, WL.TurnPhase.Attacks, annotations, jumpToSpot)) then
                 close();
             end
         end);

@@ -97,7 +97,7 @@ function SubmitClicked()
 	local payload = 'GiftArmies_' .. numArmies .. ',' .. SelectedTerritory.ID .. ',' .. TargetPlayerID;
 	local order = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload);
 
-	if (WL.IsVersionOrHigher and WL.IsVersionOrHigher("5.34.1")) then
+	if (WL.IsVersionOrHigher("5.34.1")) then
 		order.JumpToActionSpotOpt = WL.RectangleVM.Create(SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY, SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY);
 		order.TerritoryAnnotationsOpt = { [SelectedTerritory.ID] = WL.TerritoryAnnotation.Create("Gift " .. numArmies) };
 	end

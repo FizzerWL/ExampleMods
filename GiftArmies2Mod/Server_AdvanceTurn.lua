@@ -8,6 +8,7 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		local numArmies = tonumber(payloadSplit[1])
 		local targetTerritoryID = tonumber(payloadSplit[2]);
 		local targetPlayerID = tonumber(payloadSplit[3]);
+		local td = game.Map.Territories[targetTerritoryID];
 
 		--Skip if we don't control the territory (this can happen if someone captures the territory before our gift order executes)
 		if (order.PlayerID ~= game.ServerGame.LatestTurnStanding.Territories[targetTerritoryID].OwnerPlayerID) then
@@ -32,7 +33,14 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		--Add armies to destination player
 		local incomeMod = WL.IncomeMod.Create(targetPlayerID, numArmies, 'Gifted ' .. numArmies .. ' armies from ' .. game.Game.Players[order.PlayerID].DisplayName(nil, false));
 
-		addNewOrder(WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, {removeFromSource}, nil, {incomeMod}));
+		local event = WL.GameOrderEvent.Create(order.PlayerID, order.Message, {}, {removeFromSource}, nil, {incomeMod});
+		event.JumpToActionSpotOpt = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
+
+		if (WL.IsVersionOrHigher("5.34.1")) then
+			event.TerritoryAnnotationsOpt = { [targetTerritoryID] = WL.TerritoryAnnotation.Create("Gift " .. numArmies) };
+		end
+
+		addNewOrder(event);
 
 		skipThisOrder(WL.ModOrderControl.SkipAndSupressSkippedMessage); --we replaced the GameOrderCustom with a GameOrderEvent, so get rid of the custom order.  There wouldn't be any harm in leaving it there, but it adds clutter to the orders list so it's better to get rid of it.
 	end

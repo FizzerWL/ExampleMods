@@ -3,7 +3,6 @@ require('WLUtilities');
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game)
 	Game = game;
-	Phase = WL.TurnPhase.Purchase;
 
 	setMaxSize(450, 250);
 	root = rootParent;
@@ -113,14 +112,14 @@ function TargetTerritoryClicked(terrDetails)
 	Cost = Mod.Settings.CostPerNeutralArmy * terr.NumArmies.NumArmies;
 	CostLabel.SetText("This territory costs " .. Cost .. " gold");
 
-	TargetTerritoryID = terrDetails.ID;
+	SelectedTerritory = terrDetails;
 
 	submitButton.SetInteractable(true);
 	requestNewTerritoryButton.SetInteractable(true);
 end
 
 function SubmitClicked()
-	if (TargetTerritoryID == nil) then
+	if (SelectedTerritory == nil) then
 		UI.Alert("Please choose a territory first");
 		return;
 	end
@@ -138,13 +137,20 @@ function SubmitClicked()
 		return;
 	end
 
-	local msg = 'Request to purchase ' ..  Game.Map.Territories[TargetTerritoryID].Name .. ' for ' .. Cost .. ' gold';
-
-	local payload = 'BuyNeutral_' .. TargetTerritoryID;
+	local msg = 'Request to purchase ' .. SelectedTerritory.Name .. ' for ' .. Cost .. ' gold';
+	local payload = 'BuyNeutral_' .. SelectedTerritory.ID;
 
     --Pass a cost to the GameOrderCustom as its fourth argument.  This ensures the game takes the gold away from the player for this order, both on the client and server.
 	-- I will be placing the order in the purchase phase
-	local custom = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost }, Phase);
+	local custom = WL.GameOrderCustom.Create(Game.Us.ID, msg, payload, { [WL.ResourceType.Gold] = Cost }, WL.TurnPhase.Purchase);
+
+	if (WL.IsVersionOrHigher("5.34.1")) then
+		custom.JumpToActionSpotOpt = WL.RectangleVM.Create(SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY, SelectedTerritory.MiddlePointX, SelectedTerritory.MiddlePointY);
+		custom.TerritoryAnnotationsOpt = { [SelectedTerritory.ID] = WL.TerritoryAnnotation.Create("Buy Neutral") };
+	end
+
+
+
 	local orders = Game.Orders;
 	local index = 0;
     for i, order in pairs(orders) do

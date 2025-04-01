@@ -56,9 +56,10 @@ function Server_AdvanceTurn_End(game, addNewOrder)
 
 
 	local mods = {};
+	local annotations = {};
 
 	if Mod.Settings.NumTerritories == 0 then
-		SwapAll(playerIDs, terrs, mods);
+		SwapAll(playerIDs, terrs, mods, annotations);
 	else
 		local numSwaps = NumTerritoriesToSwap(terrs);
 		for i=1,numSwaps do
@@ -66,23 +67,37 @@ function Server_AdvanceTurn_End(game, addNewOrder)
 			for p=1,#playerIDs do
 				local pid1 = playerIDs[p];
 				local pid2 = GetNextWrapped(playerIDs, p);
-				table.insert(mods, CreateTerritoryMod(terrs[pid1][i], pid2));
+				local territoryID = terrs[pid1][i];
+				table.insert(mods, CreateTerritoryMod(territoryID, pid2));
+
+				if (WL.IsVersionOrHigher("5.34.1")) then
+					annotations[territoryID] = WL.TerritoryAnnotation.Create('Territory Swap!');
+				end
 			end
 		end
 	end
 
-	addNewOrder(WL.GameOrderEvent.Create(WL.PlayerID.Neutral, "Swap territories!", {}, mods));
+	local event = WL.GameOrderEvent.Create(WL.PlayerID.Neutral, "Swap territories!", {}, mods);
+	if (WL.IsVersionOrHigher("5.34.1")) then
+		event.TerritoryAnnotationsOpt = annotations;
+	end
+
+	addNewOrder(event);
 
 end
 
 
-function SwapAll(playerIDs, terrs, mods) 
+function SwapAll(playerIDs, terrs, mods, annotations) 
 	for p=1,#playerIDs do
 		local pid1 = playerIDs[p];
 		local pid2 = GetNextWrapped(playerIDs, p);
 
 		for _, territoryID in pairs(terrs[pid1]) do
 			table.insert(mods, CreateTerritoryMod(territoryID, pid2));
+
+			if (WL.IsVersionOrHigher("5.34.1")) then
+				annotations[territoryID] = WL.TerritoryAnnotation.Create('Territory Swap!');
+			end
 		end
 	end
 end
