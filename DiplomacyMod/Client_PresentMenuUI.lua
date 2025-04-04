@@ -7,13 +7,19 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 
 	local vert = UI.CreateVerticalLayoutGroup(rootParent);
 
+	if (game.Us ~= nil) then --don't show propose button to spectators
+		UI.CreateButton(vert).SetText("Propose Alliance").SetOnClick(function()
+			game.CreateDialog(CreateProposeDialog);
+		end);
+	end
+
 	--List pending proposals.  This isn't absolutely necessary since we also alert the player of new proposals, but it's nice to list them here anyway.
 	for _,proposal in pairs(Mod.PlayerGameData.PendingProposals or {}) do
 		local otherPlayer = game.Game.Players[proposal.PlayerOne].DisplayName(nil, false);
 		local row = UI.CreateHorizontalLayoutGroup(vert);
 		UI.CreateLabel(row).SetText('Proposal from ' .. otherPlayer);
 		UI.CreateButton(row).SetText('Respond').SetOnClick(function() DoProposalPrompt(game, proposal); close(); end);
-    end
+	end
 
 	local alliances = Mod.PublicGameData.Alliances or {};
 	if (#alliances == 0) then
@@ -40,13 +46,6 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 			UI.CreateLabel(vert).SetText(playerOne .. ' and ' .. playerTwo .. ' are allied until turn ' .. (alliance.ExpiresOnTurn+1));
 		end
 	end
-
-	if (game.Us ~= nil) then --don't show propose button to spectators
-		UI.CreateButton(vert).SetText("Propose Alliance").SetOnClick(function()
-			game.CreateDialog(CreateProposeDialog);
-		end);
-	end
-
 end
 
 function CreateProposeDialog(rootParent, setMaxSize, setScrollable, game, close)
@@ -90,8 +89,6 @@ function CreateProposeDialog(rootParent, setMaxSize, setScrollable, game, close)
 			close(); --Close the propose dialog since we're done with it
 		end);
 	end);
-
-
 end
 
 
