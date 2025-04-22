@@ -67,7 +67,7 @@ function TargetTerritoryClicked(terrDetails)
 
 	local purchaseRequests = {};
 	for _, order in ipairs(Game.Orders) do
-		if order.OccursInPhase ~= nil and order.OccursInPhase > Phase then
+		if order.OccursInPhase ~= nil and order.OccursInPhase > WL.TurnPhase.Purchase then
 			break;
 		end
 		if (order.proxyType == 'GameOrderCustom' and startsWith(order.Payload, 'BuyNeutral_')) then
