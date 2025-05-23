@@ -40,6 +40,9 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 		if (structures[WL.StructureType.ArmyCamp] == nil) then return; end;
 		if (structures[WL.StructureType.ArmyCamp] <= 0) then return; end;
 
+		--If an attack of 0, abort, so skipped orders don't destroy the fort
+		if (result.ActualArmies.IsEmpty) then return; end;
+
 		--Attack found against a fort!  Cancel the attack and remove the fort.
 		structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] - 1;
 
