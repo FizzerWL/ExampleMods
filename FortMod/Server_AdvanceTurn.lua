@@ -95,10 +95,6 @@ function BuildForts(game, addNewOrder)
 			structures[structureID] = structures[structureID] + numFortsToBuildHere;
 		end
 
-		local pow = WL.StructureType.Power; --temporary
-		structures[pow] = 1; --temporary
-
-		
 		local terrMod = WL.TerritoryModification.Create(territoryID);
 		terrMod.SetStructuresOpt = structures;
 
