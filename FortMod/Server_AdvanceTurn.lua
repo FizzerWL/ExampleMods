@@ -33,18 +33,20 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 
 	--Check if this is an attack against a territory with a fort.
 	if (order.proxyType == 'GameOrderAttackTransfer' and result.IsAttack) then
+		local structureID = WL.StructureType.Custom("Fort"); --matches to StructureImages/Fort.png
+
 		local structures = game.ServerGame.LatestTurnStanding.Territories[order.To].Structures;
 
 		--If no fort here, abort.
 		if (structures == nil) then return; end;
-		if (structures[WL.StructureType.ArmyCamp] == nil) then return; end;
-		if (structures[WL.StructureType.ArmyCamp] <= 0) then return; end;
+		if (structures[structureID] == nil) then return; end;
+		if (structures[structureID] <= 0) then return; end;
 
 		--If an attack of 0, abort, so skipped orders don't destroy the fort
 		if (result.ActualArmies.IsEmpty) then return; end;
 
 		--Attack found against a fort!  Cancel the attack and remove the fort.
-		structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] - 1;
+		structures[structureID] = structures[structureID] - 1;
 
 		local terrMod = WL.TerritoryModification.Create(order.To);
 		terrMod.SetStructuresOpt = structures;
@@ -68,7 +70,8 @@ end
 
 function BuildForts(game, addNewOrder)
 	--Build any forts that we queued in up Server_AdvanceTurn_Order
-	
+	local structureID = WL.StructureType.Custom("Fort"); --matches to StructureImages/Fort.png
+
 	local priv = Mod.PrivateGameData;
 	local pending = priv.PendingForts;
 	if (pending == nil) then return; end;
@@ -84,13 +87,18 @@ function BuildForts(game, addNewOrder)
 
 		local structures = game.ServerGame.LatestTurnStanding.Territories[territoryID].Structures;
 
+
 		if (structures == nil) then structures = {}; end;
-		if (structures[WL.StructureType.ArmyCamp] == nil) then
-			structures[WL.StructureType.ArmyCamp] = numFortsToBuildHere;
+		if (structures[structureID] == nil) then
+			structures[structureID] = numFortsToBuildHere;
 		else
-			structures[WL.StructureType.ArmyCamp] = structures[WL.StructureType.ArmyCamp] + numFortsToBuildHere;
+			structures[structureID] = structures[structureID] + numFortsToBuildHere;
 		end
-	
+
+		local pow = WL.StructureType.Power; --temporary
+		structures[pow] = 1; --temporary
+
+		
 		local terrMod = WL.TerritoryModification.Create(territoryID);
 		terrMod.SetStructuresOpt = structures;
 

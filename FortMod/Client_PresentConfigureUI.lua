@@ -1,5 +1,10 @@
 
 function Client_PresentConfigureUI(rootParent)
+	if (not WL.IsVersionOrHigher("5.38")) then
+		UI.Alert("You must update your app to the latest version to use the Fort mod");
+		return;
+	end
+
 	local turnsToGetFort = Mod.Settings.TurnsToGetFort;
 	if turnsToGetFort == nil then turnsToGetFort = 4; end
     

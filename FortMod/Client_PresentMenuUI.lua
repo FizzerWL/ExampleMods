@@ -1,6 +1,12 @@
 require('Utilities')
 
 function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close)
+
+	if (not WL.IsVersionOrHigher("5.38")) then
+		UI.Alert("You must update your app to the latest version to use the Fort mod");
+		return;
+	end
+
 	Game = game;
 	Close = close;
 	
