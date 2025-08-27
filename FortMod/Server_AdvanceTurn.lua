@@ -34,19 +34,33 @@ function Server_AdvanceTurn_Order(game, order, result, skipThisOrder, addNewOrde
 	--Check if this is an attack against a territory with a fort.
 	if (order.proxyType == 'GameOrderAttackTransfer' and result.IsAttack) then
 		local structureID = WL.StructureType.Custom("Fort"); --matches to StructureImages/Fort.png
+		local backcompatStructureID = WL.StructureType.ArmyCamp; --since we used to use army camps in earlier versions, we treat Army Camps as forts
 
 		local structures = game.ServerGame.LatestTurnStanding.Territories[order.To].Structures;
 
 		--If no fort here, abort.
 		if (structures == nil) then return; end;
-		if (structures[structureID] == nil) then return; end;
-		if (structures[structureID] <= 0) then return; end;
+
+		local numFortsHere = 0;
+		if (structures[structureID] ~= nil) then
+			numFortsHere = numFortsHere + structures[structureID];
+		end
+		if (structures[backcompatStructureID] ~= nil) then
+			numFortsHere = numFortsHere + structures[backcompatStructureID];
+		end
+
+		--If no fort here, abort.
+		if (numFortsHere == 0) then return; end;
 
 		--If an attack of 0, abort, so skipped orders don't destroy the fort
 		if (result.ActualArmies.IsEmpty) then return; end;
 
 		--Attack found against a fort!  Cancel the attack and remove the fort.
-		structures[structureID] = structures[structureID] - 1;
+		if (structures[backcompatStructureID] ~= nil and structures[backcompatStructureID] > 0) then
+			structures[backcompatStructureID] = structures[backcompatStructureID] - 1;
+		else
+			structures[structureID] = structures[structureID] - 1;
+		end
 
 		local terrMod = WL.TerritoryModification.Create(order.To);
 		terrMod.SetStructuresOpt = structures;
