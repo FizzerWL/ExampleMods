@@ -63,6 +63,11 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 end
 
 function BreakAlliance(otherPlayerID, otherPlayerName)
+	-- If the player has committed their orders already, stop them from cancelling their alliance
+	if game.Us.HasCommittedOrders then
+		UI.Alert("You must first uncommit your orders before cancelling an alliance");
+		return;
+	end
 	local msg = 'Breaking alliance with ' .. otherPlayerName;
 
 	local payload = 'Diplomacy2_BreakAlliance_' .. otherPlayerID;
