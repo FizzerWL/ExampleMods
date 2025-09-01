@@ -22,6 +22,11 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 	else
 		--Render all alliances that involve us first
 		local ourAlliances = filter(alliances, function(alliance) return game.Us ~= nil and (alliance.PlayerOne == game.Us.ID or alliance.PlayerTwo == game.Us.ID) end);
+		
+		-- Only show label explaining players cannot cancel alliances during the distribution turn when in distribution turn and the player is in an alliance 
+		if game.Game.TurnNumber < 1 and #ourAlliances > 0 then
+			UI.CreateLabel(vert).SetText("You can cancel alliances after the distribution phase");
+		end
 		for _,alliance in pairs(ourAlliances) do
 			local otherPlayerID
 			if alliance.PlayerOne == game.Us.ID then
@@ -37,7 +42,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 			UI.CreateButton(horz).SetText("Break").SetOnClick(function() 
 				BreakAlliance(otherPlayerID, otherPlayerName);
 				close();
-			end);
+			end).SetInteractable(game.Game.TurnNumber >= 1);		-- Set interactable field to true when the game is not in the distribution phase
 		end
 
 			
