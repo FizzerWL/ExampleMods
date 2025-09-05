@@ -25,7 +25,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 		
 		-- Only show label explaining players cannot cancel alliances during the distribution turn when in distribution turn and the player is in an alliance 
 		if game.Game.TurnNumber < 1 and #ourAlliances > 0 then
-			UI.CreateLabel(vert).SetText("You can cancel alliances after the distribution phase");
+			UI.CreateLabel(vert).SetText("You can break alliances after the distribution phase");
 		end
 		for _,alliance in pairs(ourAlliances) do
 			local otherPlayerID
@@ -65,7 +65,7 @@ end
 function BreakAlliance(otherPlayerID, otherPlayerName)
 	-- If the player has committed their orders already, stop them from cancelling their alliance
 	if game.Us.HasCommittedOrders then
-		UI.Alert("You must first uncommit your orders before cancelling an alliance");
+		UI.Alert("You must first uncommit your orders before breaking an alliance");
 		return;
 	end
 	local msg = 'Breaking alliance with ' .. otherPlayerName;

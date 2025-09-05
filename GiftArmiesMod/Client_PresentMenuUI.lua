@@ -9,7 +9,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 
 	vert = UI.CreateVerticalLayoutGroup(rootParent);
 
-	if (game.LatestStanding == nil) then
+	if (game.LatestStanding == nil or game.Game.TurnNumber < 1) then
 		UI.CreateLabel(vert).SetText("Cannot use until game has begun");
 		return;
 	end

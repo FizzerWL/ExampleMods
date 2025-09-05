@@ -26,7 +26,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 	UI.CreateLabel(vert).SetText("Note that forts get built at the end of your turn, so use caution when building on a territory you may lose control of.");
 
 	SelectTerritoryBtn = UI.CreateButton(vert).SetText("Select Territory").SetOnClick(SelectTerritoryClicked);
-	SelectTerritoryBtn.SetInteractable(numForts > 0);
+	SelectTerritoryBtn.SetInteractable(numForts > 0 and game.Game.TurnNumber >= 1);
 	TargetTerritoryInstructionLabel = UI.CreateLabel(vert).SetText("");
 
 	BuildFortBtn = UI.CreateButton(vert).SetText("Build Fort").SetOnClick(BuildFortClicked).SetInteractable(false);
