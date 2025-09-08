@@ -64,7 +64,7 @@ end
 
 function BreakAlliance(otherPlayerID, otherPlayerName)
 	-- If the player has committed their orders already, stop them from cancelling their alliance
-	if game.Us.HasCommittedOrders then
+	if Game.Us.HasCommittedOrders then
 		UI.Alert("You must first uncommit your orders before breaking an alliance");
 		return;
 	end
