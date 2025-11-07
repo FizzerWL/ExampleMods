@@ -54,7 +54,7 @@ function Client_PresentMenuUI(rootParent, setMaxSize, setScrollable, game, close
 		end
 	end
 
-	if (game.Us ~= nil) then --don't show propose button to spectators
+	if (game.Us ~= nil and game.Us.State == WL.GamePlayerState.Playing) then --don't show propose button to spectators
 		UI.CreateButton(vert).SetText("Propose Alliance").SetOnClick(function()
 			game.CreateDialog(CreateProposeDialog);
 		end);
