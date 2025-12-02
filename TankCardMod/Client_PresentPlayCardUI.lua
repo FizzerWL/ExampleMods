@@ -60,7 +60,6 @@ function TerritoryClicked(terrDetails)
 	end
 	TargetTerritoryBtn.SetInteractable(true);
 
-    local terr = Game.LatestStanding.Territories[terrDetails.ID];
 
 	if (terrDetails == nil) then
 		--The click request was cancelled.   Return to our default state.
@@ -68,11 +67,13 @@ function TerritoryClicked(terrDetails)
         TargetTerritoryID = nil;
         TargetTerritoryName = nil;
     elseif (terr.OwnerPlayerID ~= Game.Us.ID) then
+        local terr = Game.LatestStanding.Territories[terrDetails.ID];
         TargetTerritoryInstructionLabel.SetText("You may only select territories you control");
         TargetTerritoryID = nil;
         TargetTerritoryName = nil;
     else
 		--Territory was clicked, remember its ID
+        local terr = Game.LatestStanding.Territories[terrDetails.ID];
 		TargetTerritoryInstructionLabel.SetText("Selected territory: " .. terrDetails.Name);
 		TargetTerritoryID = terrDetails.ID;
         TargetTerritoryName = terrDetails.Name;
