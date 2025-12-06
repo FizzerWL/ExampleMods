@@ -66,14 +66,16 @@ function TerritoryClicked(terrDetails)
 		TargetTerritoryInstructionLabel.SetText("");
         TargetTerritoryID = nil;
         TargetTerritoryName = nil;
-    elseif (terr.OwnerPlayerID ~= Game.Us.ID) then
-        local terr = Game.LatestStanding.Territories[terrDetails.ID];
+        return;
+    end
+        
+    local terr = Game.LatestStanding.Territories[terrDetails.ID];        
+    if (terr.OwnerPlayerID ~= Game.Us.ID) then
         TargetTerritoryInstructionLabel.SetText("You may only select territories you control");
         TargetTerritoryID = nil;
         TargetTerritoryName = nil;
     else
 		--Territory was clicked, remember its ID
-        local terr = Game.LatestStanding.Territories[terrDetails.ID];
 		TargetTerritoryInstructionLabel.SetText("Selected territory: " .. terrDetails.Name);
 		TargetTerritoryID = terrDetails.ID;
         TargetTerritoryName = terrDetails.Name;
