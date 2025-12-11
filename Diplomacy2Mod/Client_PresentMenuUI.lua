@@ -112,8 +112,12 @@ end
 
 
 function TargetPlayerClicked()
-	local options = map(filter(Game.Game.Players, IsPotentialTarget), PlayerButton);
-	UI.PromptFromList("Select the player you'd like to propose an alliance with", options);
+	local players = filter(Game.Game.Players, IsPotentialTarget)
+	table.sort(players, function(a, b)
+		return a:DisplayName(nil, false) < b:DisplayName(nil, false)
+	end);
+
+	UI.PromptFromList("Select the player you'd like to propose an alliance with", map(players, PlayerButton));
 end
 
 --Determines if the player is one we can propose an alliance to.
@@ -122,15 +126,21 @@ function IsPotentialTarget(player)
 
 	if (player.State ~= WL.GamePlayerState.Playing) then return false end; --skip players not alive anymore, or that declined the game.
 
-	if (Game.Settings.SinglePlayer) then return true end; --in single player, allow proposing with everyone
+	if (player.IsAI and not Game.Settings.SinglePlayer) then return false end; --In multi-player, never allow proposing with an AI.
 
-	return not player.IsAI; --In multi-player, never allow proposing with an AI.
+	return true;
 end
 
 function PlayerButton(player)
 	local name = player.DisplayName(nil, false);
 	local ret = {};
-	ret["text"] = name;
+	
+	if (WL.IsVersionOrHigher("5.41.0")) then
+		ret["player"] = player.ID;
+	else
+		ret["text"] = name;
+	end
+	
 	ret["selected"] = function() 
 		TargetPlayerBtn.SetText(name);
 		TargetPlayerID = player.ID;

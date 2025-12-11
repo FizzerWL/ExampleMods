@@ -60,7 +60,7 @@ end
 
 
 function Server_AdvanceTurn_End(game, addNewOrder)
-	--break any alliances that we saw break orders for	
+	--break any alliances that we saw break orders for
 	local gameData = Mod.PublicGameData;
 	for _, allianceBreak in pairs(AlliancesBreakingThisTurn) do
 
@@ -72,5 +72,10 @@ function Server_AdvanceTurn_End(game, addNewOrder)
 		local msg = ourPlayerName .. ' broke alliance with ' .. otherPlayerName;
 		addNewOrder(WL.GameOrderEvent.Create(allianceBreak.OurPlayerID, msg));
 	end
+	
+	--Remove alliances from players who aren't alive anymore, just to keep the list of alliances tidy.
+	gameData.Alliances = filter(gameData.Alliances or {}, function(alliance) return game.Game.Players[alliance.PlayerOne].State == WL.GamePlayerState.Playing and game.Game.Players[alliance.PlayerTwo].State == WL.GamePlayerState.Playing; end);
+	
+	
 	Mod.PublicGameData = gameData;
 end
