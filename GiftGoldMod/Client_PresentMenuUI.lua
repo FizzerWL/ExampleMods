@@ -48,7 +48,13 @@ end
 function PlayerButton(player)
 	local name = player.DisplayName(nil, false);
 	local ret = {};
-	ret["text"] = name;
+
+	if (WL.IsVersionOrHigher("5.41.0")) then
+		ret["player"] = player.ID;
+	else
+		ret["text"] = name;
+	end
+
 	ret["selected"] = function() 
 		TargetPlayerBtn.SetText(name);
 		TargetPlayerID = player.ID;
