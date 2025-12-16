@@ -33,7 +33,7 @@ end
 
 
 function TargetPlayerClicked()
-	local players = filter(Game.Game.Players, function (p) return p.ID ~= Game.Us.ID end);
+	local players = filter(Game.Game.Players, function (p) return p.ID ~= Game.Us.ID and player.State == WL.GamePlayerState.Playing end);
 	local options = map(players, PlayerButton);
 	UI.PromptFromList("Select the player you'd like to give armies to", options);
 end
