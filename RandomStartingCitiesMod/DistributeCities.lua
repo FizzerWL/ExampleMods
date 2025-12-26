@@ -19,7 +19,13 @@ function DistributeCities(game, standing)
     --Then loop up to the number of territories we need to distribute on
     for i=1,numTerrs do
         local s = terrs[i].Structures;
-        if (s == nil) then s = {}; end;
+        if (s == nil) then 
+            s = {}; 
+        else        -- If we do not copy the existing structures to the new structures table, they will get overridden
+            for struct, num in pairs(s) do
+                s[struct] = num;
+            end
+        end
         s[WL.StructureType.City] = Mod.Settings.NumCitiesPerTerritory;
         terrs[i].Structures = s;
     end
