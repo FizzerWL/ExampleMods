@@ -23,7 +23,7 @@ function Client_PresentConfigureUI(rootParent)
         .SetWholeNumbers(false)
         .SetSliderMinValue(0)
         .SetSliderMaxValue(5)
-        .SetValue(Mod.Settings.Weight or 1.0);
+        .SetValue(Mod.Settings.CardWeight or 1.0);
     
     local horz = UI.CreateHorizontalLayoutGroup(rootParent);
     UI.CreateLabel(horz).SetText('Minimum pieces awarded per turn').SetPreferredWidth(290);
