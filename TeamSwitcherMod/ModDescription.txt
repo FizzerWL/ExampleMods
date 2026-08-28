@@ -1,0 +1,9 @@
+Allows players to change teams during the game.  Open the Team Switcher mod from the game's menu to see who's on which team, to propose a new team, or to leave the team you're on.
+
+To form a team, click "Propose a team" and name exactly who should be on it.  You're always on the team you propose.  Everyone you name is asked to accept, and the team only happens once all of them have.  Anyone named in a proposal can decline it, which cancels it for everyone.
+
+Leaving a team doesn't need anyone's agreement -- just click "Leave my team".
+
+Team changes always take effect when the turn advances, so everyone plays out the turn on the teams they started it with.  Because of this, each player can only have one team change pending at a time; if you try for a second one in the same turn, you'll be asked to wait until the next turn.
+
+In games with cards, be aware that cards belong to the team rather than to the individual player.  Cards do not follow a player who leaves a team -- they stay behind with the team.

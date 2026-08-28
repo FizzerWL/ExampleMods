@@ -36,8 +36,13 @@ function Client_PresentPlayCardUI(game, cardInstance, playCard, closeCardsDialog
                 annotations = { [TargetTerritoryID] = WL.TerritoryAnnotation.Create("Build Tank") };
                 jumpToSpot = WL.RectangleVM.Create(td.MiddlePointX, td.MiddlePointY, td.MiddlePointX, td.MiddlePointY);
             end
+            
+            local icon = nil;
+            if (WL.IsVersionOrHigher("6.05.0")) then
+                icon = "TankIcon";
+            end
 
-            if (playCard("Create a tank on " .. TargetTerritoryName, "CreateTank_" .. TargetTerritoryID, WL.TurnPhase.Attacks, annotations, jumpToSpot)) then
+            if (playCard("Create a tank on " .. TargetTerritoryName, "CreateTank_" .. TargetTerritoryID, WL.TurnPhase.Attacks, annotations, jumpToSpot, icon)) then
                 close();
             end
         end);
