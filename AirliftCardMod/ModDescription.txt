@@ -1,0 +1,5 @@
+This mod is an example of how the airlift card could be made as a mod.  It reproduces the built-in airlift card: a player plays the card to move armies from one of their territories to another territory they own (or a teammate's), no matter how far apart the territories are.  The airlift happens after deployments and before attacks.
+
+The play dialog lets the player pick a source and a destination from the map, shows a snapshot of each territory, and lets them choose how many armies to move.  When the turn plays out, the airlift is shown as an arrow that extends from the source to the destination.
+
+It demonstrates mod-defined cards (Client_PresentPlayCardUI, Server_AdvanceTurn_Order), mod images in the UI (UI.CreateImage and the UIImages folder), territory snapshots in the UI (UI.CreateSnapshot), button icons, and custom map visuals (Client_Visual).

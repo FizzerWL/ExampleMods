@@ -79,7 +79,7 @@ function startsWith(str, sub)
 	return string.sub(str, 1, string.len(sub)) == sub;
 end
 
---Warzone functions sometimes return a metatable with data.  That is, it's a table, but instead of having actual data in it, it populates the data when we ask for it (such as by iterating over it or by accessing a key).  It does this for performance, but sometimes we actually need all the data in a real table.  This function converts the metatable into an actual table.
+--war.app functions sometimes return a metatable with data.  That is, it's a table, but instead of having actual data in it, it populates the data when we ask for it (such as by iterating over it or by accessing a key).  It does this for performance, but sometimes we actually need all the data in a real table.  This function converts the metatable into an actual table.
 function BuildMetatable(meta)
 	local ret = {};
 	for k,v in pairs(meta) do

@@ -1,5 +1,5 @@
 
---The team ID that Warzone uses to mean "this player isn't on a team"
+--The team ID that War.app uses to mean "this player isn't on a team"
 NoTeam = -1;
 
 function map(array, func)
